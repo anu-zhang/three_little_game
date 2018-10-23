@@ -340,7 +340,7 @@ export default class Main {
     // console.log(camera.position.y);
 
   }
-  setCameraY(clientZ){
+  setCameraZ(clientZ){
     camera.position.z = ( clientZ - lastTouchZ)/30 + camera.position.z;
     console.log(camera.position.z);
 
