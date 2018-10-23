@@ -2,11 +2,12 @@ import * as THREE from 'libs/three.js'
 import SwipeListener from "app/SwipeListener.js"
 
 let ctx = canvas.getContext('webgl');
-
+let t=0;
 let scene;
 let renderer;
 let camera;
 let cube;
+let cube2;
 let light;
 let width;
 let height;
@@ -25,6 +26,9 @@ let onTouchStartClientX;
 let onTouchStartClientY;
 let isOnTouchStart = false;
 let currentSpeed;
+let pivotPoint;
+
+let sphereMesh;//围绕某点转
 /**
  * 游戏主函数
  */
@@ -58,9 +62,9 @@ export default class Main {
     // camera.position.z = 4;
     camera.position.set(50, 100, 400);
     // 相机以哪个方向为上方
-    camera.up.x = 0;
-    camera.up.y = 1;
-    camera.up.z = 0;
+    camera.up.x = 0;//红
+    camera.up.y = 1;//绿
+    camera.up.z = 0;//蓝
     camera.lookAt(new THREE.Vector3(0, 0, 0));
     // console.log('=============='+camera.up.x);
     // console.log('=============='+camera.up.y);
@@ -187,17 +191,47 @@ export default class Main {
     var faceMaterial = new THREE.MeshFaceMaterial(matArray);
 
     //基本单色纹理
-    var material = new THREE.MeshBasicMaterial({color: 0xffccff});
+    // var material = new THREE.MeshBasicMaterial({color: 0xffccff});
 
+
+    var material = new THREE.MeshBasicMaterial({
+
+      color: 0xffff00,
+
+      wireframe: true
+
+    });
 
     // 将方块放入场景
-    var geometry = new THREE.CubeGeometry(100, 100, 100);
-    cube = new THREE.Mesh(geometry, faceMaterial);
+    var geometry = new THREE.CubeGeometry(50, 50, 50,3,3,3);
+    cube = new THREE.Mesh(geometry, material);
     scene.add(cube);
 
     this.pushAction(rotaAction);
   }
+  initCube2(chang,kuan,gao,Material,rotaAction) {
+    // 六色纹理
+    // var matArray = [];
+    // matArray.push(new THREE.MeshBasicMaterial({color: 0xFFFF00}));
+    // matArray.push(new THREE.MeshBasicMaterial({color: 0x00ff00}));
+    // matArray.push(new THREE.MeshBasicMaterial({color: 0x0000FF}));
+    // matArray.push(new THREE.MeshBasicMaterial({color: 0xFFFFFF}));
+    // matArray.push(new THREE.MeshBasicMaterial({color: 0x800080}));
+    // matArray.push(new THREE.MeshBasicMaterial({color: 0xFF0000}));
+    //
+    // var faceMaterial = new THREE.MeshFaceMaterial(matArray);
 
+    //基本单色纹理
+    // var material = new THREE.MeshBasicMaterial({color: 0xffccff});
+
+
+    // 将方块放入场景
+    var geometry = new THREE.CubeGeometry(chang, kuan, gao);
+    cube2 = new THREE.Mesh(geometry, Material);
+    scene.add(cube2);
+
+    this.pushAction(rotaAction);
+  }
   initCoordinatePlain() {
     var geometry = new THREE.Geometry();
     // B begin
@@ -237,85 +271,108 @@ export default class Main {
     // 画了一个会动的立方体，传入回动的参数
     this.initCube(function () {
       // cube.rotation.x -= 0.01;
-      if (cube.rotation.x > 2 * Math.PI) {
-        cube.rotation.x = 0;
-      }
-      if (cube.rotation.x < 0) {
-        cube.rotation.x = 2 * Math.PI;
-      }
-      // console.log(cube.rotation.x)
-      // cube.rotation.y -= 0.01;
-      if (cube.rotation.y > 2 * Math.PI) {
-        cube.rotation.y = 0;
-      }
-      if (cube.rotation.y < 0) {
-        cube.rotation.y = 2 * Math.PI;
-      }
-      // console.log(cube.rotation.y);
-
-      // cube.rotation.y += roateSpeed;
     });
 
+    // 画第二个立方体cube2
+    var matArray = [];
+    matArray.push(new THREE.MeshBasicMaterial({color: 0xFFFF00}));
+    matArray.push(new THREE.MeshBasicMaterial({color: 0xFFFF00}));
+    matArray.push(new THREE.MeshBasicMaterial({color: 0xFFFF00}));
+    matArray.push(new THREE.MeshBasicMaterial({color: 0xFFFF00}));
+    matArray.push(new THREE.MeshBasicMaterial({color: 0xFFFF00}));
+    matArray.push(new THREE.MeshBasicMaterial({color: 0xFFFF00}));
+    var faceMaterial = new THREE.MeshFaceMaterial(matArray);
+    // this.initCube2(100,100,100,faceMaterial,function () {
+    // });
+
+    sphereMesh = new THREE.Mesh(
+        new THREE.SphereGeometry(10,10,10),
+      new THREE.MeshLambertMaterial({color:0xff00FF})/*设置球体的材质*/
+    ); //材质设定
+    sphereMesh.position.set(0,0,0);
+    pivotPoint = new THREE.Object3D();
+    pivotPoint.add(cube);
+    sphereMesh.add(pivotPoint);
+    scene.add(sphereMesh);
+    sphereMesh.name = 'cubesphere';
+
+    this.pushAction(function () {
+      // scene.getObjectByName('cubesphere').rotation.x += 0.1;
+      // scene.getObjectByName('cubesphere').rotation.y += 0.1;
+      scene.getObjectByName('cubesphere').rotation.z += 0.1;
+    });
     //判断左右上下滑动
     new SwipeListener(function (e) {
       // console.log(e)
     });
 
+    this.setThingPostion(cube,100,100,100);
     wx.onTouchMove(function (e) {
-      // console.log('cube.rotation.x',cube.rotation.y)//2 * Math.PI是左右赚一圈
-      // console.log('cube.rotation.y',cube.rotation.x)//2 * Math.PI左右转一圈
 
-      if (lastTouchY > e.touches[0].clientY) {
-        cube.rotation.x = instance.getSpeedY(e.touches[0].clientY);
-      } else {
-        cube.rotation.x = instance.getSpeedY(e.touches[0].clientY);
-      }
-      lastTouchY = e.touches[0].clientY
-      // console.log(e.touches[0]);
+      //设置相机角度
+      instance.setCameraX(e.touches[0].clientX);
+      instance.setCameraY(e.touches[0].clientY);
 
-      // console.log(width,height);
-      if (lastTouchX > e.touches[0].clientX) {
-        instance.getSpeedX(e.touches[0].clientX);
-      } else {
-        instance.getSpeedX(e.touches[0].clientX);
-      }
-      lastTouchX = e.touches[0].clientX
+      //设置物体自传
+      instance.setSpeedY(e.touches[0].clientY,cube);
+      lastTouchY = e.touches[0].clientY;
+
+      //设置物体自传
+      instance.setSpeedX(e.touches[0].clientX,cube);
+      lastTouchX = e.touches[0].clientX;
 
     });
     wx.onTouchStart(function (e) {
       isOnTouchStart = true;
-      onTouchStartClientX = e.changedTouches[0].clientX;
-      onTouchStartClientY = e.changedTouches[0].clientY;
+      lastTouchX = onTouchStartClientX = e.changedTouches[0].clientX;
+      lastTouchY = onTouchStartClientY = e.changedTouches[0].clientY;
     });
     this.loop();
   }
 
-  getSpeedX(clientX) {
-    let lengthX = clientX - onTouchStartClientX;
-    let  timestamp1 = +(new Date())
-console.log("timestamp1",timestamp1);
-    cube.rotation.y =   lengthX/width * 2*Math.PI;
+  //设置相机的位置
+  setCameraX(clientX){
+    camera.position.x = ( lastTouchX-clientX)/30 + camera.position.x;
+  }
+
+  setCameraY(clientY){
+    camera.position.y = ( clientY - lastTouchY)/30 + camera.position.y;
+    // console.log(camera.position.y);
+
+  }
+  setCameraY(clientZ){
+    camera.position.z = ( clientZ - lastTouchZ)/30 + camera.position.z;
+    console.log(camera.position.z);
+
+  }
+  setThingPostion(who,x,y,z){
+    who.position.x = x;
+    who.position.y = y;
+    who.position.z = z;
+  }
+  setSpeedX(clientX,cube) {
+
+    cube.rotation.y = (2 * Math.PI / width) * (clientX - lastTouchX) + cube.rotation.y;
+
     if (cube.rotation.y > 2 * Math.PI) {
       cube.rotation.y = 0;
     }
     if (cube.rotation.y < 0) {
       cube.rotation.y = 2 * Math.PI;
     }
-    // console.log("cube.rotation.y",cube.rotation.y);
-    // console.log("lengthX/width * 2*Math.PI",lengthX/width * 2*Math.PI);
-    // console.log("cubro",cubro);
-
-    // return cubro;
-    // console.log(Math.PI, "Math.PI");
-    // return Math.PI;
 
 
   }
 
-  getSpeedY(clientY) {
-    return 0;
+  setSpeedY(clientY,cube) {
+    cube.rotation.x = (2 * Math.PI / height) * (clientY - lastTouchY) + cube.rotation.x;
 
-    // console.log(width,height);
+    if (cube.rotation.x > 2 * Math.PI) {
+      cube.rotation.x = 0;
+    }
+    if (cube.rotation.x < 0) {
+      cube.rotation.x = 2 * Math.PI;
+    }
   }
 
 
@@ -376,7 +433,13 @@ console.log("timestamp1",timestamp1);
   render() {
 
     renderer.clear();
+
+
     renderer.render(scene, camera);
+    // t++;
+    // camera.position.x = 400*Math.cos(t/10);
+    // camera.position.y = 400*Math.sin(t/20);
+    // camera.position.z = 50*Math.cos(t/10);
     // // 渲染应该使用渲染器，结合相机和场景来得到结果画面。
     // renderer.render(scene, camera);
     // ... 渲染代码块 ...
