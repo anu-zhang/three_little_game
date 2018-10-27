@@ -1,8 +1,9 @@
 import * as THREE from 'libs/three.js'
 import SwipeListener from "app/SwipeListener.js"
+import "libs/OrbitControls.js"
 
 let ctx = canvas.getContext('webgl');
-let t=0;
+let t = 0;
 let scene;
 let renderer;
 let camera;
@@ -29,6 +30,7 @@ let currentSpeed;
 let pivotPoint;
 
 let sphereMesh;//围绕某点转
+let controls;
 /**
  * 游戏主函数
  */
@@ -66,6 +68,10 @@ export default class Main {
     camera.up.y = 1;//绿
     camera.up.z = 0;//蓝
     camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+    //使用控件控制方块方向
+    controls = new THREE.OrbitControls(camera);
+
     // console.log('=============='+camera.up.x);
     // console.log('=============='+camera.up.y);
     // console.log('=============='+camera.up.z);
@@ -203,13 +209,14 @@ export default class Main {
     });
 
     // 将方块放入场景
-    var geometry = new THREE.CubeGeometry(50, 50, 50,3,3,3);
+    var geometry = new THREE.CubeGeometry(50, 50, 50, 3, 3, 3);
     cube = new THREE.Mesh(geometry, material);
     scene.add(cube);
 
     this.pushAction(rotaAction);
   }
-  initCube2(chang,kuan,gao,Material,rotaAction) {
+
+  initCube2(chang, kuan, gao, Material, rotaAction) {
     // 六色纹理
     // var matArray = [];
     // matArray.push(new THREE.MeshBasicMaterial({color: 0xFFFF00}));
@@ -232,6 +239,7 @@ export default class Main {
 
     this.pushAction(rotaAction);
   }
+
   initCoordinatePlain() {
     var geometry = new THREE.Geometry();
     // B begin
@@ -255,10 +263,11 @@ export default class Main {
   threeStart() {
     //场景
     this.initScene();
-    //相机
-    this.initCamera();
+
     //渲染器
     this.initRender();
+    //相机
+    this.initCamera();
     // 画了一个三角形
     this.initReact();
     // 应该是画光线 但是不管用
@@ -286,10 +295,10 @@ export default class Main {
     // });
 
     sphereMesh = new THREE.Mesh(
-        new THREE.SphereGeometry(10,10,10),
-      new THREE.MeshLambertMaterial({color:0xff00FF})/*设置球体的材质*/
+      new THREE.SphereGeometry(10, 10, 10),
+      new THREE.MeshLambertMaterial({color: 0xff00FF})/*设置球体的材质*/
     ); //材质设定
-    sphereMesh.position.set(0,0,0);
+    sphereMesh.position.set(0, 0, 0);
     pivotPoint = new THREE.Object3D();
     pivotPoint.add(cube);
     sphereMesh.add(pivotPoint);
@@ -299,26 +308,25 @@ export default class Main {
     this.pushAction(function () {
       // scene.getObjectByName('cubesphere').rotation.x += 0.1;
       // scene.getObjectByName('cubesphere').rotation.y += 0.1;
-      scene.getObjectByName('cubesphere').rotation.z += 0.1;
+      // scene.getObjectByName('cubesphere').rotation.z += 0.1;
     });
     //判断左右上下滑动
     new SwipeListener(function (e) {
       // console.log(e)
     });
 
-    this.setThingPostion(cube,100,100,100);
+    this.setThingPostion(cube, 100, 100, 100);
     wx.onTouchMove(function (e) {
 
       //设置相机角度
-      instance.setCameraX(e.touches[0].clientX);
-      instance.setCameraY(e.touches[0].clientY);
+      // instance.setCamera(e.touches[0].clientX, e.touches[0].clientY);
 
       //设置物体自传
-      instance.setSpeedY(e.touches[0].clientY,cube);
+      // instance.setSpeedY(e.touches[0].clientY,cube);
       lastTouchY = e.touches[0].clientY;
 
       //设置物体自传
-      instance.setSpeedX(e.touches[0].clientX,cube);
+      // instance.setSpeedX(e.touches[0].clientX,cube);
       lastTouchX = e.touches[0].clientX;
 
     });
@@ -331,26 +339,20 @@ export default class Main {
   }
 
   //设置相机的位置
-  setCameraX(clientX){
-    camera.position.x = ( lastTouchX-clientX)/30 + camera.position.x;
-  }
-
-  setCameraY(clientY){
-    camera.position.y = ( clientY - lastTouchY)/30 + camera.position.y;
-    // console.log(camera.position.y);
+  setCamera(clientX, clientY) {
+    camera.position.x = (lastTouchX - clientX) / 5 + camera.position.x;
+    camera.position.y = (clientY - lastTouchY) / 5 + camera.position.y;
 
   }
-  setCameraZ(clientZ){
-    camera.position.z = ( clientZ - lastTouchZ)/30 + camera.position.z;
-    console.log(camera.position.z);
 
-  }
-  setThingPostion(who,x,y,z){
+
+  setThingPostion(who, x, y, z) {
     who.position.x = x;
     who.position.y = y;
     who.position.z = z;
   }
-  setSpeedX(clientX,cube) {
+
+  setSpeedX(clientX, cube) {
 
     cube.rotation.y = (2 * Math.PI / width) * (clientX - lastTouchX) + cube.rotation.y;
 
@@ -364,7 +366,7 @@ export default class Main {
 
   }
 
-  setSpeedY(clientY,cube) {
+  setSpeedY(clientY, cube) {
     cube.rotation.x = (2 * Math.PI / height) * (clientY - lastTouchY) + cube.rotation.x;
 
     if (cube.rotation.x > 2 * Math.PI) {
