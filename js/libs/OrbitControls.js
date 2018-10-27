@@ -462,9 +462,11 @@ THREE.OrbitControls = function ( object, domElement ) {
 
     var element = scope.domElement === document ? scope.domElement.body : scope.domElement;
 
-    rotateLeft( 2 * Math.PI * rotateDelta.x / element.clientHeight ); // yes, height
+    // rotateLeft( 2 * Math.PI * rotateDelta.x / element.clientHeight ); // yes, height
+    rotateLeft( 2 * Math.PI * rotateDelta.x / window.innerWidth * scope.rotateSpeed );
 
-    rotateUp( 2 * Math.PI * rotateDelta.y / element.clientHeight );
+    // rotateUp( 2 * Math.PI * rotateDelta.y / element.clientHeight );
+    rotateUp( 2 * Math.PI * rotateDelta.y / window.innerHeight * scope.rotateSpeed );
 
     rotateStart.copy( rotateEnd );
 
@@ -610,9 +612,11 @@ THREE.OrbitControls = function ( object, domElement ) {
 
     var element = scope.domElement === document ? scope.domElement.body : scope.domElement;
 
-    rotateLeft( 2 * Math.PI * rotateDelta.x / element.clientHeight ); // yes, height
+    // rotateLeft( 2 * Math.PI * rotateDelta.x / element.clientHeight ); // yes, height
+    rotateLeft( 2 * Math.PI * rotateDelta.x / window.innerWidth * scope.rotateSpeed );
+    // rotateUp( 2 * Math.PI * rotateDelta.y / element.clientHeight );
+    rotateUp( 2 * Math.PI * rotateDelta.y / window.innerHeight * scope.rotateSpeed );
 
-    rotateUp( 2 * Math.PI * rotateDelta.y / element.clientHeight );
 
     rotateStart.copy( rotateEnd );
 
