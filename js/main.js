@@ -1,6 +1,8 @@
 import * as THREE from 'libs/three.js'
 import SwipeListener from "app/SwipeListener.js"
 import "libs/OrbitControls.js"
+//一个测量性能pfs的插件，有时间在调试
+import Stats from "libs/Stats.js"
 
 let ctx = canvas.getContext('webgl');
 let t = 0;
@@ -16,7 +18,7 @@ let action = new Array();
 width = window.innerWidth;
 height = window.innerHeight;
 // ... 其它变量／常量 ...
-
+let mouse = new THREE.Vector2();
 let MoveX;
 let MoveY;
 let lastTouchX;
@@ -28,9 +30,11 @@ let onTouchStartClientY;
 let isOnTouchStart = false;
 let currentSpeed;
 let pivotPoint;
-
+let stats;
 let sphereMesh;//围绕某点转
 let controls;
+let raycaster;
+let intersects;
 /**
  * 游戏主函数
  */
@@ -46,6 +50,8 @@ export default class Main {
 
   initScene() {
     scene = new THREE.Scene();
+    scene.background = new THREE.Color( 0xf0f0f0 );
+
   }
 
 
@@ -94,7 +100,23 @@ export default class Main {
     // renderer.setSize(window.innerWidth, window.innerHeight);
     // document.body.appendChild(renderer.domElement);
   }
-
+  initCubee(){
+    var geometry = new THREE.BoxBufferGeometry( 20, 20, 20 );
+    for ( var i = 0; i < 20; i ++ ) {
+      var object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
+      object.position.x = Math.random() * 800 - 400;
+      object.position.y = Math.random() * 800 - 400;
+      object.position.z = Math.random() * 800 - 400;
+      // object.rotation.x = Math.random() * 2 * Math.PI;
+      // object.rotation.y = Math.random() * 2 * Math.PI;
+      // object.rotation.z = Math.random() * 2 * Math.PI;
+      object.scale.x = Math.random() + 0.5;
+      object.scale.y = Math.random() + 0.5;
+      object.scale.z = Math.random() + 0.5;
+      scene.add( object );
+    }
+    raycaster = new THREE.Raycaster();
+  }
   initLight() {
     light = new THREE.DirectionalLight(0xFF0000, 1.0, 0);
     light.position.set(100, 100, 200);
@@ -184,7 +206,7 @@ export default class Main {
     scene.add(line);
   }
 
-  initCube(rotaAction) {
+  initCube3(rotaAction) {
     // 六色纹理
     var matArray = [];
     matArray.push(new THREE.MeshBasicMaterial({color: 0xFFFF00}));
@@ -201,11 +223,8 @@ export default class Main {
 
 
     var material = new THREE.MeshBasicMaterial({
-
       color: 0xffff00,
-
       wireframe: true
-
     });
 
     // 将方块放入场景
@@ -216,7 +235,9 @@ export default class Main {
     this.pushAction(rotaAction);
   }
 
-  initCube2(chang, kuan, gao, Material, rotaAction) {
+  initCube(chang, kuan, gao, width, height, depth, Material, rotaAction=function () {
+    
+  }) {
     // 六色纹理
     // var matArray = [];
     // matArray.push(new THREE.MeshBasicMaterial({color: 0xFFFF00}));
@@ -233,9 +254,10 @@ export default class Main {
 
 
     // 将方块放入场景
-    var geometry = new THREE.CubeGeometry(chang, kuan, gao);
+    var geometry = new THREE.CubeGeometry(chang, kuan, gao,5,5,5);
     cube2 = new THREE.Mesh(geometry, Material);
     scene.add(cube2);
+    this.setThingPostion(cube2,width,height,depth);
 
     this.pushAction(rotaAction);
   }
@@ -243,24 +265,36 @@ export default class Main {
   initCoordinatePlain() {
     var geometry = new THREE.Geometry();
     // B begin
-    geometry.vertices.push(new THREE.Vector3(-111, 0, 0));
-    geometry.vertices.push(new THREE.Vector3(111, 0, 0));
+    geometry.vertices.push(new THREE.Vector3(-1000, 0, 0));
+    geometry.vertices.push(new THREE.Vector3(1000, 0, 0));
     // B end
-    for (var i = 0; i <= 20; i++) {
+    for (var i = -20; i <= 20; i++) {
 
       var line = new THREE.Line(geometry, new THREE.LineBasicMaterial({color: 0xF9F9F9, opacity: 1}));
-      line.position.z = (i * 44);
+      line.position.z = (i * 30);
       scene.add(line);
 
       var line = new THREE.Line(geometry, new THREE.LineBasicMaterial({color: 0xF9F9F9, opacity: 1}));
-      line.position.x = (i * 44);
+      line.position.x = (i * 30);
       line.rotation.y = 90 * Math.PI / 180;
       scene.add(line);
 
     }
   }
 
+  initStat() {
+    stats = new Stats();
+    stats.domElement.style.position = 'absolute';
+    //
+    stats.domElement.style.right = '0px';
+    //
+    stats.domElement.style.top = '0px';
+
+    document.body.appendChild(stats.domElement);
+  }
+
   threeStart() {
+
     //场景
     this.initScene();
 
@@ -278,9 +312,49 @@ export default class Main {
     this.initCoordinatePlain();
 
     // 画了一个会动的立方体，传入回动的参数
-    this.initCube(function () {
+    this.initCube3(function () {
       // cube.rotation.x -= 0.01;
     });
+
+    let chang = 50;
+    let kuan = 50;
+    let gao = 50;
+    let material = new THREE.MeshBasicMaterial({color: 0xffff00, wireframe: true});
+    this.initCube(chang,kuan,gao,0,0,-60,material);
+    this.initCube(chang,kuan,gao,0,0,0,material);
+    this.initCube(chang,kuan,gao,0,0,60,material);
+
+    this.initCube(chang,kuan,gao,60,0,-60,material);
+    this.initCube(chang,kuan,gao,60,0,0,material);
+    this.initCube(chang,kuan,gao,60,0,60,material);
+
+    this.initCube(chang,kuan,gao,-60,0,-60,material);
+    this.initCube(chang,kuan,gao,-60,0,0,material);
+    this.initCube(chang,kuan,gao,-60,0,60,material);
+
+    this.initCube(chang,kuan,gao,60,60,-60,material);
+    this.initCube(chang,kuan,gao,60,60,0,material);
+    this.initCube(chang,kuan,gao,60,60,60,material);
+
+    this.initCube(chang,kuan,gao,0,60,-60,material);
+    this.initCube(chang,kuan,gao,0,60,0,material);
+    this.initCube(chang,kuan,gao,0,60,60,material);
+
+    this.initCube(chang,kuan,gao,-60,60,-60,material);
+    this.initCube(chang,kuan,gao,-60,60,0,material);
+    this.initCube(chang,kuan,gao,-60,60,60,material);
+
+    this.initCube(chang,kuan,gao,0,-60,-60,material);
+    this.initCube(chang,kuan,gao,0,-60,0,material);
+    this.initCube(chang,kuan,gao,0,-60,60,material);
+
+    this.initCube(chang,kuan,gao,-60,-60,-60,material);
+    this.initCube(chang,kuan,gao,-60,-60,0,material);
+    this.initCube(chang,kuan,gao,-60,-60,60,material);
+
+    this.initCube(chang,kuan,gao,60,-60,-60,material);
+    this.initCube(chang,kuan,gao,60,-60,0,material);
+    this.initCube(chang,kuan,gao,60,-60,60,material);
 
     // 画第二个立方体cube2
     var matArray = [];
@@ -291,7 +365,7 @@ export default class Main {
     matArray.push(new THREE.MeshBasicMaterial({color: 0xFFFF00}));
     matArray.push(new THREE.MeshBasicMaterial({color: 0xFFFF00}));
     var faceMaterial = new THREE.MeshFaceMaterial(matArray);
-    // this.initCube2(100,100,100,faceMaterial,function () {
+    // this.initCube(100,100,100,50,50,50,faceMaterial,function () {
     // });
 
     sphereMesh = new THREE.Mesh(
@@ -315,7 +389,7 @@ export default class Main {
       // console.log(e)
     });
 
-    this.setThingPostion(cube, 100, 100, 100);
+    // this.setThingPostion(cube, 100, 100, 100);
     wx.onTouchMove(function (e) {
 
       //设置相机角度
@@ -330,12 +404,27 @@ export default class Main {
       lastTouchX = e.touches[0].clientX;
 
     });
+
+    this.initStat();
+    this.initCubee();
+    this.loop();
+
     wx.onTouchStart(function (e) {
+      //@todo 教学：https://segmentfault.com/a/1190000010490845 https://github.com/mrdoob/three.js/blob/master/examples/webgl_interactive_cubes.html
+      mouse.x = ( e.touches[0].clientX / window.innerWidth ) * 2 - 1;
+      mouse.y = - ( e.touches[0].clientY / window.innerHeight ) * 2 + 1;
+      console.log(mouse.x,mouse.y);//世界坐标系：窗口范围按此单位恰好是(-1,-1)到(1,1)，
+      // 射线的原理获得点击到的物体
+      raycaster.setFromCamera( mouse, camera );//
+      intersects = raycaster.intersectObjects( scene.children );
+
+      if ( intersects.length > 0 ) {
+        intersects[ 0 ].object.position.x += 100;
+      }
       isOnTouchStart = true;
       lastTouchX = onTouchStartClientX = e.changedTouches[0].clientX;
       lastTouchY = onTouchStartClientY = e.changedTouches[0].clientY;
     });
-    this.loop();
   }
 
   //设置相机的位置
@@ -429,12 +518,18 @@ export default class Main {
   // UPDATE 更新
   update() {
     // ... 数据更新代码块 ...
+    stats.update();
   }
 
   // RENDER 渲染
   render() {
 
     renderer.clear();
+    controls.update();
+
+
+
+
 
 
     renderer.render(scene, camera);
