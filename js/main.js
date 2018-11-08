@@ -1,8 +1,12 @@
-import * as THREE from 'libs/three.js'
-import SwipeListener from "app/SwipeListener.js"
-import "libs/OrbitControls.js"
+import * as THREE from 'libs/three'
+import SwipeListener from "app/SwipeListener"
+import "libs/OrbitControls"
+import "libs/TransformControls"
 //一个测量性能pfs的插件，有时间在调试
-import Stats from "libs/Stats.js"
+import Stats from "libs/Stats"
+import Scene from "app/Scene"
+import Render from "app/Render"
+import Camera from "app/Camera"
 
 let ctx = canvas.getContext('webgl');
 let t = 0;
@@ -33,6 +37,8 @@ let pivotPoint;
 let stats;
 let sphereMesh;//围绕某点转
 let controls;
+let transformControl;
+
 let raycaster;
 let intersects;
 /**
@@ -44,62 +50,179 @@ export default class Main {
       return instance;
     }
     instance = this;
-    this.start();
+    this.threeStart();
   }
+  threeStart() {
+    scene = new Scene();
 
-
-  initScene() {
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0xf0f0f0 );
-
-  }
-
-
-  initCamera() {
-    // camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    // camera.position.z = 5;
-    // Fov – 相机的视锥体的垂直视野角
-    // Aspect – 相机视锥体的长宽比
-    // Near – 相机视锥体的近平面
-    // Far – 相机视锥体的远平面
-
-    camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 10000);
-    //相机的位置
-    // camera.position.x = 0.5;
-    // camera.position.y = 1;
-    // camera.position.z = 4;
-    camera.position.set(50, 100, 400);
-    // 相机以哪个方向为上方
-    camera.up.x = 0;//红
-    camera.up.y = 1;//绿
-    camera.up.z = 0;//蓝
-    camera.lookAt(new THREE.Vector3(0, 0, 0));
+    //渲染器
+    renderer = new Render(ctx);
+    //相机
+    camera = new Camera();
 
     //使用控件控制方块方向
-    controls = new THREE.OrbitControls(camera);
+     controls = new THREE.OrbitControls(camera);
+    // 添加平移控件
 
-    // console.log('=============='+camera.up.x);
-    // console.log('=============='+camera.up.y);
-    // console.log('=============='+camera.up.z);
-    // camera.up.x = 0;
-    // camera.up.y = 0;
-    // camera.up.z = 1;
-    // console.log('=============='+camera.up.x);
-    // console.log('=============='+camera.up.y);
-    // console.log('=============='+camera.up.z);
+    transformControl = new THREE.TransformControls(camera, renderer.domElement);
+    scene.add(transformControl);
+
+    // 使动画循环使用时阻尼或自转 意思是否有惯性
+    controls.enableDamping = true;
+    //动态阻尼系数 就是鼠标拖拽旋转灵敏度
+    controls.dampingFactor = 0.1;
+    //是否可以缩放
+    controls.enableZoom = true;
+    //是否自动旋转
+    controls.autoRotate = false;
+    //是否开启右键拖拽
+    controls.enablePan = true;
+
+    controls.addEventListener('touchstart', function (event) {
+      // 让变换控件对象和选中的对象绑定
+      console.log(333);
+      // transformControl.attach(event.object);
+    });
+
+
+
+    raycaster = new THREE.Raycaster();
+
+    // 画了一个三角形
+    this.initReact();
+    // 应该是画光线 但是不管用
+    this.initLight();
+    // 画了xyz轴
+    this.initLine();
+    // 平行线条
+    this.initCoordinatePlain();
+
+    // 画了一个会动的立方体，传入回动的参数
+    this.initCube3(function () {
+      // cube.rotation.x -= 0.01;
+    });
+
+    let chang = 50;
+    let kuan = 50;
+    let gao = 50;
+    let material = new THREE.MeshBasicMaterial({color: 0x111111, wireframe: true});
+    this.initCube(chang,kuan,gao,0,0,-60,material);
+    this.initCube(chang,kuan,gao,0,0,0,material);
+    this.initCube(chang,kuan,gao,0,0,60,material);
+
+    this.initCube(chang,kuan,gao,60,0,-60,material);
+    this.initCube(chang,kuan,gao,60,0,0,material);
+    this.initCube(chang,kuan,gao,60,0,60,material);
+
+    this.initCube(chang,kuan,gao,-60,0,-60,material);
+    this.initCube(chang,kuan,gao,-60,0,0,material);
+    this.initCube(chang,kuan,gao,-60,0,60,material);
+
+    this.initCube(chang,kuan,gao,60,60,-60,material);
+    this.initCube(chang,kuan,gao,60,60,0,material);
+    this.initCube(chang,kuan,gao,60,60,60,material);
+
+    this.initCube(chang,kuan,gao,0,60,-60,material);
+    this.initCube(chang,kuan,gao,0,60,0,material);
+    this.initCube(chang,kuan,gao,0,60,60,material);
+
+    this.initCube(chang,kuan,gao,-60,60,-60,material);
+    this.initCube(chang,kuan,gao,-60,60,0,material);
+    this.initCube(chang,kuan,gao,-60,60,60,material);
+
+    this.initCube(chang,kuan,gao,0,-60,-60,material);
+    this.initCube(chang,kuan,gao,0,-60,0,material);
+    this.initCube(chang,kuan,gao,0,-60,60,material);
+
+    this.initCube(chang,kuan,gao,-60,-60,-60,material);
+    this.initCube(chang,kuan,gao,-60,-60,0,material);
+    this.initCube(chang,kuan,gao,-60,-60,60,material);
+
+    this.initCube(chang,kuan,gao,60,-60,-60,material);
+    this.initCube(chang,kuan,gao,60,-60,0,material);
+    this.initCube(chang,kuan,gao,60,-60,60,material);
+
+    // 画第二个立方体cube2
+    var matArray = [];
+    matArray.push(new THREE.MeshBasicMaterial({color: 0xFFFF00}));
+    matArray.push(new THREE.MeshBasicMaterial({color: 0xFFFF00}));
+    matArray.push(new THREE.MeshBasicMaterial({color: 0xFFFF00}));
+    matArray.push(new THREE.MeshBasicMaterial({color: 0xFFFF00}));
+    matArray.push(new THREE.MeshBasicMaterial({color: 0xFFFF00}));
+    matArray.push(new THREE.MeshBasicMaterial({color: 0xFFFF00}));
+    var faceMaterial = new THREE.MeshFaceMaterial(matArray);
+    // this.initCube(100,100,100,50,50,50,faceMaterial,function () {
+    // });
+
+    sphereMesh = new THREE.Mesh(
+      new THREE.SphereGeometry(10, 10, 10),
+      new THREE.MeshLambertMaterial({color: 0xff00FF})/*设置球体的材质*/
+    ); //材质设定
+    sphereMesh.position.set(0, 0, 0);
+    pivotPoint = new THREE.Object3D();
+    pivotPoint.add(cube);
+    sphereMesh.add(pivotPoint);
+    scene.add(sphereMesh);
+    sphereMesh.name = 'cubesphere';
+
+    this.pushAction(function () {
+      // scene.getObjectByName('cubesphere').rotation.x += 0.1;
+      // scene.getObjectByName('cubesphere').rotation.y += 0.1;
+      // scene.getObjectByName('cubesphere').rotation.z += 0.1;
+    });
+
+
+
+//判断左右上下滑动
+    new SwipeListener(function (e) {
+      // console.log(e)
+    });
+    wx.onTouchMove(function (e) {
+      // transformControl.attach(event.object);
+
+      //设置相机角度
+      // instance.setCamera(e.touches[0].clientX, e.touches[0].clientY);
+
+      //设置物体自传
+      // instance.setSpeedY(e.touches[0].clientY,cube);
+      lastTouchY = e.touches[0].clientY;
+
+      //设置物体自传
+      // instance.setSpeedX(e.touches[0].clientX,cube);
+      lastTouchX = e.touches[0].clientX;
+
+    });
+
+    this.initStat();
+    // this.initCubee();
+    this.loop();
+    wx.onTouchEnd(function (e){
+      console.log('end');
+      controls.enabled = true;
+
+    });
+
+    wx.onTouchStart(function (e) {
+      //@todo 教学：https://segmentfault.com/a/1190000010490845 https://github.com/mrdoob/three.js/blob/master/examples/webgl_interactive_cubes.html
+      mouse.x = ( e.touches[0].clientX / window.innerWidth ) * 2 - 1;
+      mouse.y = - ( e.touches[0].clientY / window.innerHeight ) * 2 + 1;
+      console.log(mouse.x,mouse.y);//世界坐标系：窗口范围按此单位恰好是(-1,-1)到(1,1)，
+      // 射线的原理获得点击到的物体
+      raycaster.setFromCamera( mouse, camera );//
+      intersects = raycaster.intersectObjects( scene.children );
+      if ( intersects.length > 0 ) {
+        // controls.enabled = false;
+        //   intersects[ 0 ].object.position.x += 100;
+      }
+      isOnTouchStart = true;
+      lastTouchX = onTouchStartClientX = e.changedTouches[0].clientX;
+      lastTouchY = onTouchStartClientY = e.changedTouches[0].clientY;
+    });
   }
 
-  initRender() {
 
-    renderer = new THREE.WebGLRenderer(ctx);
-    renderer.setSize(width, height);
-    document.body.appendChild(renderer.domElement);
-    renderer.setClearColor(0x221F24, 1.0);
-    // renderer = new THREE.WebGLRenderer(ctx);
-    // 设置渲染器的大小为窗口的内宽度，也就是内容区的宽度
-    // renderer.setSize(window.innerWidth, window.innerHeight);
-    // document.body.appendChild(renderer.domElement);
-  }
+
+
   initCubee(){
     var geometry = new THREE.BoxBufferGeometry( 20, 20, 20 );
     for ( var i = 0; i < 20; i ++ ) {
@@ -115,7 +238,6 @@ export default class Main {
       object.scale.z = Math.random() + 0.5;
       scene.add( object );
     }
-    raycaster = new THREE.Raycaster();
   }
   initLight() {
     light = new THREE.DirectionalLight(0xFF0000, 1.0, 0);
@@ -293,139 +415,7 @@ export default class Main {
     document.body.appendChild(stats.domElement);
   }
 
-  threeStart() {
 
-    //场景
-    this.initScene();
-
-    //渲染器
-    this.initRender();
-    //相机
-    this.initCamera();
-    // 画了一个三角形
-    this.initReact();
-    // 应该是画光线 但是不管用
-    this.initLight();
-    // 画了xyz轴
-    this.initLine();
-    // 平行线条
-    this.initCoordinatePlain();
-
-    // 画了一个会动的立方体，传入回动的参数
-    this.initCube3(function () {
-      // cube.rotation.x -= 0.01;
-    });
-
-    let chang = 50;
-    let kuan = 50;
-    let gao = 50;
-    let material = new THREE.MeshBasicMaterial({color: 0xffff00, wireframe: true});
-    this.initCube(chang,kuan,gao,0,0,-60,material);
-    this.initCube(chang,kuan,gao,0,0,0,material);
-    this.initCube(chang,kuan,gao,0,0,60,material);
-
-    this.initCube(chang,kuan,gao,60,0,-60,material);
-    this.initCube(chang,kuan,gao,60,0,0,material);
-    this.initCube(chang,kuan,gao,60,0,60,material);
-
-    this.initCube(chang,kuan,gao,-60,0,-60,material);
-    this.initCube(chang,kuan,gao,-60,0,0,material);
-    this.initCube(chang,kuan,gao,-60,0,60,material);
-
-    this.initCube(chang,kuan,gao,60,60,-60,material);
-    this.initCube(chang,kuan,gao,60,60,0,material);
-    this.initCube(chang,kuan,gao,60,60,60,material);
-
-    this.initCube(chang,kuan,gao,0,60,-60,material);
-    this.initCube(chang,kuan,gao,0,60,0,material);
-    this.initCube(chang,kuan,gao,0,60,60,material);
-
-    this.initCube(chang,kuan,gao,-60,60,-60,material);
-    this.initCube(chang,kuan,gao,-60,60,0,material);
-    this.initCube(chang,kuan,gao,-60,60,60,material);
-
-    this.initCube(chang,kuan,gao,0,-60,-60,material);
-    this.initCube(chang,kuan,gao,0,-60,0,material);
-    this.initCube(chang,kuan,gao,0,-60,60,material);
-
-    this.initCube(chang,kuan,gao,-60,-60,-60,material);
-    this.initCube(chang,kuan,gao,-60,-60,0,material);
-    this.initCube(chang,kuan,gao,-60,-60,60,material);
-
-    this.initCube(chang,kuan,gao,60,-60,-60,material);
-    this.initCube(chang,kuan,gao,60,-60,0,material);
-    this.initCube(chang,kuan,gao,60,-60,60,material);
-
-    // 画第二个立方体cube2
-    var matArray = [];
-    matArray.push(new THREE.MeshBasicMaterial({color: 0xFFFF00}));
-    matArray.push(new THREE.MeshBasicMaterial({color: 0xFFFF00}));
-    matArray.push(new THREE.MeshBasicMaterial({color: 0xFFFF00}));
-    matArray.push(new THREE.MeshBasicMaterial({color: 0xFFFF00}));
-    matArray.push(new THREE.MeshBasicMaterial({color: 0xFFFF00}));
-    matArray.push(new THREE.MeshBasicMaterial({color: 0xFFFF00}));
-    var faceMaterial = new THREE.MeshFaceMaterial(matArray);
-    // this.initCube(100,100,100,50,50,50,faceMaterial,function () {
-    // });
-
-    sphereMesh = new THREE.Mesh(
-      new THREE.SphereGeometry(10, 10, 10),
-      new THREE.MeshLambertMaterial({color: 0xff00FF})/*设置球体的材质*/
-    ); //材质设定
-    sphereMesh.position.set(0, 0, 0);
-    pivotPoint = new THREE.Object3D();
-    pivotPoint.add(cube);
-    sphereMesh.add(pivotPoint);
-    scene.add(sphereMesh);
-    sphereMesh.name = 'cubesphere';
-
-    this.pushAction(function () {
-      // scene.getObjectByName('cubesphere').rotation.x += 0.1;
-      // scene.getObjectByName('cubesphere').rotation.y += 0.1;
-      // scene.getObjectByName('cubesphere').rotation.z += 0.1;
-    });
-    //判断左右上下滑动
-    new SwipeListener(function (e) {
-      // console.log(e)
-    });
-
-    // this.setThingPostion(cube, 100, 100, 100);
-    wx.onTouchMove(function (e) {
-
-      //设置相机角度
-      // instance.setCamera(e.touches[0].clientX, e.touches[0].clientY);
-
-      //设置物体自传
-      // instance.setSpeedY(e.touches[0].clientY,cube);
-      lastTouchY = e.touches[0].clientY;
-
-      //设置物体自传
-      // instance.setSpeedX(e.touches[0].clientX,cube);
-      lastTouchX = e.touches[0].clientX;
-
-    });
-
-    this.initStat();
-    this.initCubee();
-    this.loop();
-
-    wx.onTouchStart(function (e) {
-      //@todo 教学：https://segmentfault.com/a/1190000010490845 https://github.com/mrdoob/three.js/blob/master/examples/webgl_interactive_cubes.html
-      mouse.x = ( e.touches[0].clientX / window.innerWidth ) * 2 - 1;
-      mouse.y = - ( e.touches[0].clientY / window.innerHeight ) * 2 + 1;
-      console.log(mouse.x,mouse.y);//世界坐标系：窗口范围按此单位恰好是(-1,-1)到(1,1)，
-      // 射线的原理获得点击到的物体
-      raycaster.setFromCamera( mouse, camera );//
-      intersects = raycaster.intersectObjects( scene.children );
-
-      if ( intersects.length > 0 ) {
-        intersects[ 0 ].object.position.x += 100;
-      }
-      isOnTouchStart = true;
-      lastTouchX = onTouchStartClientX = e.changedTouches[0].clientX;
-      lastTouchY = onTouchStartClientY = e.changedTouches[0].clientY;
-    });
-  }
 
   //设置相机的位置
   setCamera(clientX, clientY) {
@@ -478,46 +468,11 @@ export default class Main {
     }
   }
 
-  start() {
-    this.threeStart();
-    // 初始化
-    //1. 场景
-    // scene = new THREE.Scene();
-    //
-    // //2. 相机
-    // camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    //
-    // //3. 渲染器
-    // renderer = new THREE.WebGLRenderer(ctx);
-    // // 有了这三样东西，我们才能够使用相机将场景渲染到网页上去。
-    //
-    // // 设置渲染器的大小为窗口的内宽度，也就是内容区的宽度
-    // renderer.setSize(window.innerWidth, window.innerHeight);
-    //
-    // // 渲染器renderer的domElement元素，表示渲染器中的画布
-    // document.body.appendChild(renderer.domElement);
-    // // 将方块放入场景
-    // var geometry = new THREE.CubeGeometry(1, 1, 1);
-    // var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    // cube = new THREE.Mesh(geometry, material);
-    // scene.add(cube);
-    // camera.position.z = 5;
-    //
-    // // 画一个点
-    // var a = new THREE.Vector3(4,8,9);
-    //
-    // var point2 = new THREE.Vector3();
-    //
-    // point2.set(4,8,9);
-    //... 其它代码块 ...
 
-    // 开始循环
-    // this.loop()
-  }
 
   // UPDATE 更新
   update() {
-    // ... 数据更新代码块 ...
+    // ... 数据更新代码块 66...
     stats.update();
   }
 

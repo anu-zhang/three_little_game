@@ -42,7 +42,7 @@ var Stats = function () {
   var fpsPanel = addPanel( new Stats.Panel( 'FPS', '#0ff', '#002' ) );
   var msPanel = addPanel( new Stats.Panel( 'MS', '#0f0', '#020' ) );
 
-  if ( self.performance && self.performance.memory ) {
+  if ( this.performance && this.performance.memory ) {
 
     var memPanel = addPanel( new Stats.Panel( 'MB', '#f08', '#201' ) );
 

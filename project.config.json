@@ -8,9 +8,10 @@
 		"newFeature": true
 	},
 	"compileType": "game",
-	"libVersion": "game",
+	"libVersion": "2.2.5",
 	"appid": "touristappid",
 	"projectname": "three_little_game",
+	"isGameTourist": true,
 	"condition": {
 		"search": {
 			"current": -1,
@@ -28,6 +29,5 @@
 			"current": -1,
 			"list": []
 		}
-	},
-	"isGameTourist": true
+	}
 }
