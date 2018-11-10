@@ -7,6 +7,9 @@ import Stats from "libs/Stats"
 import Scene from "app/Scene"
 import Render from "app/Render"
 import Camera from "app/Camera"
+import TransformControl from "./app/TransformControl";
+import Touch from "./app/bind/Touch"
+
 
 let ctx = canvas.getContext('webgl');
 let t = 0;
@@ -41,6 +44,7 @@ let transformControl;
 
 let raycaster;
 let intersects;
+let bind;
 /**
  * 游戏主函数
  */
@@ -53,21 +57,21 @@ export default class Main {
     this.threeStart();
   }
   threeStart() {
+
+
     // 场景
     scene = new Scene();
-
     //渲染器
     renderer = new Render(ctx);
     //相机
     camera = new Camera();
 
-    //使用控件控制方块方向
-     controls = new THREE.OrbitControls(camera);
-    // 添加平移控件
+    // 可视化平移变换控件
+    transformControl = new TransformControl(camera, renderer.domElement,scene);
 
-    transformControl = new THREE.TransformControls(camera, renderer.domElement);
-    scene.add(transformControl);
 
+    // 使用控件控制方块方向
+    controls = new THREE.OrbitControls(camera);
     // 使动画循环使用时阻尼或自转 意思是否有惯性
     controls.enableDamping = true;
     //动态阻尼系数 就是鼠标拖拽旋转灵敏度
@@ -82,7 +86,7 @@ export default class Main {
     controls.addEventListener('touchstart', function (event) {
       // 让变换控件对象和选中的对象绑定
       console.log(333);
-      // transformControl.attach(event.object);
+      transformControl.attach(event.object);
     });
 
 
@@ -176,10 +180,9 @@ export default class Main {
 
 //判断左右上下滑动
     new SwipeListener(function (e) {
-      // console.log(e)
+      console.log(e)
     });
     wx.onTouchMove(function (e) {
-      // transformControl.attach(event.object);
 
       //设置相机角度
       // instance.setCamera(e.touches[0].clientX, e.touches[0].clientY);
@@ -198,7 +201,7 @@ export default class Main {
     // this.initCubee();
     this.loop();
     wx.onTouchEnd(function (e){
-      console.log('end');
+      // console.log('end');
       controls.enabled = true;
 
     });
@@ -207,7 +210,7 @@ export default class Main {
       //@todo 教学：https://segmentfault.com/a/1190000010490845 https://github.com/mrdoob/three.js/blob/master/examples/webgl_interactive_cubes.html
       mouse.x = ( e.touches[0].clientX / window.innerWidth ) * 2 - 1;
       mouse.y = - ( e.touches[0].clientY / window.innerHeight ) * 2 + 1;
-      console.log(mouse.x,mouse.y);//世界坐标系：窗口范围按此单位恰好是(-1,-1)到(1,1)，
+      // console.log(mouse.x,mouse.y);//世界坐标系：窗口范围按此单位恰好是(-1,-1)到(1,1)，
       // 射线的原理获得点击到的物体
       raycaster.setFromCamera( mouse, camera );//
       intersects = raycaster.intersectObjects( scene.children );
@@ -219,6 +222,9 @@ export default class Main {
       lastTouchX = onTouchStartClientX = e.changedTouches[0].clientX;
       lastTouchY = onTouchStartClientY = e.changedTouches[0].clientY;
     });
+
+
+
   }
 
 

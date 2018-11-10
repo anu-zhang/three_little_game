@@ -1,8 +1,6 @@
 // 微信小游戏滑动效果实现
 import * as THREE from "../libs/three";
 import DataBus from "Databus";
-import Scene from "Scene";
-import Render from "Render";
 let databus    = new DataBus();
 let camera;
 

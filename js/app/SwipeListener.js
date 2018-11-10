@@ -26,12 +26,12 @@ export default class SwipeListener {
       /*不使用1判断斜率，而留有余量，防止误触*/
       if(k>2||k<-2){
         /*滑动20px以上激活，防止误触*/
-        if(h<-20) callback(0) /*向上*/
-        if(h>20) callback(1) /*向下*/
+        if(h<-20) callback('up') /*向上*/
+        if(h>20) callback('down') /*向下*/
       }
       if(k<0.5&&k>-0.5) {
-        if(w<-20) callback(2) /*向左*/
-        if(w>20) callback(3) /*向右*/
+        if(w<-20) callback('left') /*向左*/
+        if(w>20) callback('right') /*向右*/
       }
     }
   }
