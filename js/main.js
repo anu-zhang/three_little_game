@@ -53,6 +53,7 @@ export default class Main {
     this.threeStart();
   }
   threeStart() {
+    // 场景
     scene = new Scene();
 
     //渲染器
