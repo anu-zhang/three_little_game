@@ -2,48 +2,51 @@
 let instance;
 export default class Databus {
 
-  constructor() {
-    if (instance) {
-      return instance;
+    constructor() {
+        if (instance) {
+            return instance;
+        }
+
+        instance = this;
+        instance._width = window.innerWidth;
+        instance._height = window.innerHeight;
+
+        instance._cube = '';
+        instance._cube2 = '';
+
     }
 
-    instance = this;
-    instance._width = window.innerWidth;
-    instance._height = window.innerHeight;
-
-    instance._cube = '';
-      instance._cube2 = '';
-
-  }
-    get cube2(){
+    get cube2() {
         return instance._cube2;
     }
-    set cube2(c){
+
+    set cube2(c) {
         instance._cube2 = c;
     }
-  get cube(){
-    return instance._cube;
-  }
 
-  set cube(c){
-      instance._cube = c;
-  }
+    get cube() {
+        return instance._cube;
+    }
 
-  get width() {
-    return instance._width;
-  }
+    set cube(c) {
+        instance._cube = c;
+    }
 
-  get height() {
-    return instance._height;
-  }
+    get width() {
+        return instance._width;
+    }
 
-  set width(w) {
-    instance._width = w;
-  }
+    get height() {
+        return instance._height;
+    }
 
-  set height(h) {
-    instance._height = h;
-  }
+    set width(w) {
+        instance._width = w;
+    }
+
+    set height(h) {
+        instance._height = h;
+    }
 
 
 }

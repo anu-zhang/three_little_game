@@ -5,19 +5,19 @@ let instance;
 
 export default class Scene {
 
-  constructor() {
+    constructor() {
 
-    if (instance) {
-      return instance;
+        if (instance) {
+            return instance;
+        }
+
+        instance = this;
+
+        instance = new THREE.Scene();
+        instance.background = new THREE.Color(0xcccccc);
+
+        return instance;
     }
-
-    instance = this;
-
-    instance = new THREE.Scene();
-    instance.background = new THREE.Color(0xcccccc);
-
-    return instance;
-  }
 
 
 }
