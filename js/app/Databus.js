@@ -11,7 +11,22 @@ export default class Databus {
     instance._width = window.innerWidth;
     instance._height = window.innerHeight;
 
+    instance._cube = '';
+      instance._cube2 = '';
 
+  }
+    get cube2(){
+        return instance._cube2;
+    }
+    set cube2(c){
+        instance._cube2 = c;
+    }
+  get cube(){
+    return instance._cube;
+  }
+
+  set cube(c){
+      instance._cube = c;
   }
 
   get width() {

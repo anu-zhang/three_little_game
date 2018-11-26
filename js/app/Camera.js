@@ -46,6 +46,11 @@ export default class Camera {
   }
 
 
+//设置相机的位置
+    setCamera(clientX, clientY,lastTouchX,lastTouchY) {
+        camera.position.x = (lastTouchX - clientX) / 5 + camera.position.x;
+        camera.position.y = (clientY - lastTouchY) / 5 + camera.position.y;
 
+    }
 
 }
