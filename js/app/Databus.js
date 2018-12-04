@@ -14,8 +14,30 @@ export default class Databus {
         instance._cube = '';
         instance._cube2 = '';
 
-    }
+        instance._sphereMesh = '';
+        instance._pivotPoint = '';
 
+    }
+    get sphereMesh()
+    {
+        return instance._sphereMesh;
+
+    }
+    set sphereMesh(c)
+    {
+        instance._sphereMesh = c;
+
+    }
+    get pivotPoint()
+    {
+        return instance._pivotPoint;
+
+    }
+    set pivotPoint(c)
+    {
+        instance._pivotPoint = c;
+
+    }
     get cube2() {
         return instance._cube2;
     }
