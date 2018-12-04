@@ -135,21 +135,17 @@ export default class Main {
         // 将方块放入场景
         var geometry = new THREE.CubeGeometry(50, 50, 50,3,3,3);
         var cube3 = new THREE.Mesh(geometry, material_gz);
-        scene.add(cube3);
+        cube3.position.set(100,0,0);
 
-        databus.sphereMesh = new THREE.Mesh(
-            new THREE.SphereGeometry(10,10,10),
-            new THREE.MeshLambertMaterial({color:0xff00FF})/*设置球体的材质*/
-        ); //材质设定
-        databus.sphereMesh.position.set(100,100,100);
+        // 这个一个转轴
         databus.pivotPoint = new THREE.Object3D();
+
         databus.pivotPoint.add(cube3);
-        databus.sphereMesh.add(databus.pivotPoint);
-        scene.add(databus.sphereMesh);
-        databus.sphereMesh.name = 'cubesphere';
+        scene.add(databus.pivotPoint);
 
         Animation.pushAction(function () {
-            scene.getObjectByName('cubesphere').rotation.z += 0.1;
+            databus.pivotPoint.rotation.y += 0.1;
+            // scene.getObjectByName('cubesphere').rotation.z += 0.1;
         });
 
 
