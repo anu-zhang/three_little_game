@@ -17,6 +17,26 @@ export default class Databus {
         instance._sphereMesh = '';
         instance._pivotPoint = '';
 
+        instance._cubeArray = new Array();
+        instance._pivotPointArray = new Array();
+
+        instance._cubeIDPositionMap = new Array();
+
+    }
+
+    get cubeIDPositionMap()
+    {
+        return instance._cubeIDPositionMap;
+    }
+
+    get cubeArray()
+    {
+        return instance._cubeArray;
+    }
+    get pivotPointArray()
+    {
+        return instance._pivotPointArray;
+
     }
     get sphereMesh()
     {

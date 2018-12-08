@@ -26,7 +26,7 @@ export default class Camera {
         // camera.position.x = 0.5;
         // camera.position.y = 1;
         // camera.position.z = 4;
-        camera.position.set(50, 100, 400);
+        camera.position.set(200, 200, 200);
         // 相机以哪个方向为上方
         camera.up.x = 0;//红
         camera.up.y = 1;//绿
