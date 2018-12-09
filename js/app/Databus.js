@@ -20,10 +20,18 @@ export default class Databus {
         instance._cubeArray = new Array();
         instance._pivotPointArray = new Array();
 
-        instance._cubeIDPositionMap = new Array();
-
+        instance._cubeIDPositionMap = new Object();
+        instance._cubeDistance = 60;
+        instance._cubeChangKuanGao = 50;
     }
-
+    get cubeChangKuanGao()
+    {
+        return instance._cubeChangKuanGao;
+    }
+    get cubeDistance()
+    {
+        return instance._cubeDistance;
+    }
     get cubeIDPositionMap()
     {
         return instance._cubeIDPositionMap;

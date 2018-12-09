@@ -38,13 +38,18 @@ export default class Animation {
         pivotPoint.name = name;
 
         pivotPoint.add(cube);
-        scene.add(cube);
 
         scene.add(pivotPoint);
 
         databus.cubeArray.push(cube);
         databus.pivotPointArray.push(pivotPoint);
-        databus.cubeIDPositionMap.push(name);
+        // console.log(name.split(','));
+        var nameArray = name.split(',');
+        for (var i in nameArray){
+            if(nameArray[i] !== 'MAG'){
+                databus.cubeIDPositionMap[nameArray[i]] = databus.cubeArray.length - 1;
+            }
+        }
         Animation.pushAction(rotaAction);
     }
 
@@ -69,41 +74,41 @@ export default class Animation {
     }
 
     static cube9(scene, chang, kuan, gao, material) {
-        Animation.initCube(scene, chang, kuan, gao, 0, 0, -60, material, 'MAG,B_5');
+        Animation.initCube(scene, chang, kuan, gao, 0, 0, -databus.cubeDistance, material, 'MAG,B_5');
         Animation.initCube(scene, chang, kuan, gao, 0, 0, 0, material, 'MAG,M');
-        Animation.initCube(scene, chang, kuan, gao, 0, 0, 60, material, 'MAG,F_5');
+        Animation.initCube(scene, chang, kuan, gao, 0, 0, databus.cubeDistance, material, 'MAG,F_5');
         // //
-        Animation.initCube(scene, chang, kuan, gao, 60, 0, -60, material, 'MAG,B_4,R_6');
-        Animation.initCube(scene, chang, kuan, gao, 60, 0, 0, material, 'MAG,R_5');
-        Animation.initCube(scene, chang, kuan, gao, 60, 0, 60, material, 'MAG,F_6,R_4');
+        Animation.initCube(scene, chang, kuan, gao, databus.cubeDistance, 0, -databus.cubeDistance, material, 'MAG,B_4,R_6');
+        Animation.initCube(scene, chang, kuan, gao, databus.cubeDistance, 0, 0, material, 'MAG,R_5');
+        Animation.initCube(scene, chang, kuan, gao, databus.cubeDistance, 0, databus.cubeDistance, material, 'MAG,F_6,R_4');
         //
-        Animation.initCube(scene, chang, kuan, gao, -60, 0, -60, material, 'MAG,B_6,L_4');
-        Animation.initCube(scene, chang, kuan, gao, -60, 0, 0, material, 'MAG,L_5');
-        Animation.initCube(scene, chang, kuan, gao, -60, 0, 60, material, 'MAG,L_6,F_4');
+        Animation.initCube(scene, chang, kuan, gao, -databus.cubeDistance, 0, -databus.cubeDistance, material, 'MAG,B_6,L_4');
+        Animation.initCube(scene, chang, kuan, gao, -databus.cubeDistance, 0, 0, material, 'MAG,L_5');
+        Animation.initCube(scene, chang, kuan, gao, -databus.cubeDistance, 0, databus.cubeDistance, material, 'MAG,L_6,F_4');
         //
-        Animation.initCube(scene, chang, kuan, gao, 60, 60, -60, material, 'MAG,B_1,U_3,R_3');
-        Animation.initCube(scene, chang, kuan, gao, 60, 60, 0, material, 'MAG,U_6,R_2');
-        Animation.initCube(scene, chang, kuan, gao, 60, 60, 60, material, 'MAG,U_9,F_3,R_1');
+        Animation.initCube(scene, chang, kuan, gao, databus.cubeDistance, databus.cubeDistance, -databus.cubeDistance, material, 'MAG,B_1,U_3,R_3');
+        Animation.initCube(scene, chang, kuan, gao, databus.cubeDistance, databus.cubeDistance, 0, material, 'MAG,U_6,R_2');
+        Animation.initCube(scene, chang, kuan, gao, databus.cubeDistance, databus.cubeDistance, databus.cubeDistance, material, 'MAG,U_9,F_3,R_1');
         //
-        Animation.initCube(scene, chang, kuan, gao, 0, 60, -60, material, 'MAG,U_2,B_2');
-        Animation.initCube(scene, chang, kuan, gao, 0, 60, 0, material, 'MAG,U_5');
-        Animation.initCube(scene, chang, kuan, gao, 0, 60, 60, material, 'MAG,U_8,F_2');
+        Animation.initCube(scene, chang, kuan, gao, 0, databus.cubeDistance, -databus.cubeDistance, material, 'MAG,U_2,B_2');
+        Animation.initCube(scene, chang, kuan, gao, 0, databus.cubeDistance, 0, material, 'MAG,U_5');
+        Animation.initCube(scene, chang, kuan, gao, 0, databus.cubeDistance, databus.cubeDistance, material, 'MAG,U_8,F_2');
         //
-        Animation.initCube(scene, chang, kuan, gao, -60, 60, -60, material, 'MAG,U_1,B_3,L_1');
-        Animation.initCube(scene, chang, kuan, gao, -60, 60, 0, material, 'MAG,U_4,L_2');
-        Animation.initCube(scene, chang, kuan, gao, -60, 60, 60, material, 'MAG,F_1,U_7,L_3');
+        Animation.initCube(scene, chang, kuan, gao, -databus.cubeDistance, databus.cubeDistance, -databus.cubeDistance, material, 'MAG,U_1,B_3,L_1');
+        Animation.initCube(scene, chang, kuan, gao, -databus.cubeDistance, databus.cubeDistance, 0, material, 'MAG,U_4,L_2');
+        Animation.initCube(scene, chang, kuan, gao, -databus.cubeDistance, databus.cubeDistance, databus.cubeDistance, material, 'MAG,F_1,U_7,L_3');
         //
-        Animation.initCube(scene, chang, kuan, gao, 0, -60, -60, material, 'MAG,D_8,B_8');
-        Animation.initCube(scene, chang, kuan, gao, 0, -60, 0, material, 'MAG,D_5');
-        Animation.initCube(scene, chang, kuan, gao, 0, -60, 60, material, 'MAG,F_8,D_2');
+        Animation.initCube(scene, chang, kuan, gao, 0, -databus.cubeDistance, -databus.cubeDistance, material, 'MAG,D_8,B_8');
+        Animation.initCube(scene, chang, kuan, gao, 0, -databus.cubeDistance, 0, material, 'MAG,D_5');
+        Animation.initCube(scene, chang, kuan, gao, 0, -databus.cubeDistance, databus.cubeDistance, material, 'MAG,F_8,D_2');
         //
-        Animation.initCube(scene, chang, kuan, gao, -60, -60, -60, material,'MAG,D_7,L_7,B_9');
-        Animation.initCube(scene, chang, kuan, gao, -60, -60, 0, material,'MAG,D_4,L_8');
-        Animation.initCube(scene, chang, kuan, gao, -60, -60, 60, material,'MAG,F_7,D_1,L_9');
+        Animation.initCube(scene, chang, kuan, gao, -databus.cubeDistance, -databus.cubeDistance, -databus.cubeDistance, material, 'MAG,D_7,L_7,B_9');
+        Animation.initCube(scene, chang, kuan, gao, -databus.cubeDistance, -databus.cubeDistance, 0, material, 'MAG,D_4,L_8');
+        Animation.initCube(scene, chang, kuan, gao, -databus.cubeDistance, -databus.cubeDistance, databus.cubeDistance, material, 'MAG,F_7,D_1,L_9');
         //
-        Animation.initCube(scene, chang, kuan, gao, 60, -60, -60, material,'MAG,R_9,D_9,B_7');
-        Animation.initCube(scene, chang, kuan, gao, 60, -60, 0, material,'MAG,R_8,D_6');
-        Animation.initCube(scene, chang, kuan, gao, 60, -60, 60, material,'MAG,F_9,R_7,D_3');
+        Animation.initCube(scene, chang, kuan, gao, databus.cubeDistance, -databus.cubeDistance, -databus.cubeDistance, material, 'MAG,R_9,D_9,B_7');
+        Animation.initCube(scene, chang, kuan, gao, databus.cubeDistance, -databus.cubeDistance, 0, material, 'MAG,R_8,D_6');
+        Animation.initCube(scene, chang, kuan, gao, databus.cubeDistance, -databus.cubeDistance, databus.cubeDistance, material, 'MAG,F_9,R_7,D_3');
     }
 
     //画一个会动的方块
@@ -164,9 +169,9 @@ export default class Animation {
 
         databus.pivotPoint.add(cube3);
         scene.add(databus.pivotPoint);
-
+console.log(databus.pivotPoint);
         Animation.pushAction(function () {
-            // databus.pivotPoint.rotation.y += 0.1;
+            databus.pivotPoint.rotation.y += 0.1;
             // databus.pivotPoint.rotation.z += 0.1;
             // databus.pivotPoint.rotation.x += 0.1;
 

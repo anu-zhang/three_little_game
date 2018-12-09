@@ -98,7 +98,7 @@ export default class Main {
         console.log(databus.camera.position);
 
         Touch.move(function (e) {
-           // console.log(databus.camera.position);
+            // console.log(databus.camera.position);
         });
         // console.log(controls);
 
@@ -142,33 +142,33 @@ export default class Main {
         // Animation.initCube(databus.scene,100,100,100,50,50,50,faceMaterial,function () {});
 
 
-        // Animation.revolutionExample(databus.scene);
+        Animation.revolutionExample(databus.scene);
 
         // 初始化拖拽控件
-        var dragControls = new THREE.DragControls(databus.cubeArray, databus.camera, databus.renderer.domElement);
+        // var dragControls = new THREE.DragControls(databus.cubeArray, databus.camera, databus.renderer.domElement);
 
-        // 鼠标略过事件
-        dragControls.addEventListener('hoveron', function (event) {
-            // 让变换控件对象和选中的对象绑定
-            console.log('hoveron');
-            transformControl.attach(event.object);
-        });
+        // 鼠标略过事件 没有效果
+        // dragControls.addEventListener('hoveron', function (event) {
+        //     // 让变换控件对象和选中的对象绑定
+        //     console.log('hoveron');
+        //     // transformControl.attach(event.object);
+        // });
         // 开始拖拽
-        dragControls.addEventListener('dragstart', function (event) {
-            console.log('dragstart');
-            controls.enabled = false;
-        });
+        // dragControls.addEventListener('dragstart', function (event) {
+        //     console.log('dragstart');
+        //     controls.enabled = false;
+        // });
         // 拖拽结束
-        dragControls.addEventListener('dragend', function (event) {
-            console.log('dragend');
-
-            controls.enabled = true;
-        });
-        dragControls.addEventListener('drag', function (event) {
-            console.log(databus.touchCube.position);
-
-            // controls.enabled = true;
-        });
+        // dragControls.addEventListener('dragend', function (event) {
+        //     console.log('dragend');
+        //
+        //     controls.enabled = true;
+        // });
+        // dragControls.addEventListener('drag', function (event) {
+        //     console.log(databus.touchCube.position);
+        //
+        //     // controls.enabled = true;
+        // });
 
         //判断左右上下滑动
         new SwipeListener(function (e) {
@@ -177,19 +177,39 @@ export default class Main {
         // console.log(databus.camera.position.x.toFixed(),databus.camera.position.y.toFixed(),databus.camera.position.z.toFixed());
 
         Touch.move(function (e) {
-            lastTouchY = e.touches[0].clientY;
-            // console.log(lastTouchX);
-            lastTouchX = e.touches[0].clientX;
-            // console.log(controls.getAzimuthalAngle());
-            // console.log(controls.getPolarAngle());
-            // console.log(databus.scene);
-            // console.log(databus.camera.position.x.toFixed(),databus.camera.position.y.toFixed(),databus.camera.position.z.toFixed());
+            var randNum = Math.round(Math.random());
+            if (randNum === 1 && databus.touchCube && !databus.rotateDirection) {//降低计算频率提升顺畅度
+                // lastTouchY = e.touches[0].clientY;
+                // console.log(lastTouchX);
+                // lastTouchX = e.touches[0].clientX;
+                // console.log(controls.getAzimuthalAngle());
+                // console.log(controls.getPolarAngle());
+                // console.log(databus.scene);
+                // console.log(databus.camera.position.x.toFixed(),databus.camera.position.y.toFixed(),databus.camera.position.z.toFixed());
+                mouse.x = ( e.touches[0].clientX / window.innerWidth ) * 2 - 1;
+                mouse.y = -( e.touches[0].clientY / window.innerHeight ) * 2 + 1;
 
+                raycaster.setFromCamera(mouse, databus.camera);//
+                intersects = raycaster.intersectObjects([databus.touchCube]);
+                // console.log(intersects[0].point);
+
+                databus.rotateDirection = MagicCube.getRotateDirectionByTouchFaceAndTowPosition(databus.touchFace, databus.touchPosition, intersects[0].point);
+                // console.log(databus.rotateDirection);
+                databus.verticalRow = MagicCube.getVerticalRowByMaybeAndRotaDirect(databus.rotationTwoRows, databus.rotateDirection);
+
+                databus.relativeRow = MagicCube.getRelativeRowByVerticalRowAndTouchCubePosition(databus.verticalRow, databus.touchPosition);
+
+                databus.rotateCubeName = MagicCube.getRotateRowByVerticalRowAndRelativeRow(databus.verticalRow, databus.relativeRow);
+                databus.rotateCubeID = MagicCube.getRotateCubeIDByCubeName(databus.rotateCubeName)
+                // console.log(databus.rotateCubeID);
+                //执行旋转
+                MagicCube.actionRow(databus.rotateCubeID, databus.rotateDirection);
+            }
         });
 
 
         Touch.end(function (e) {
-            console.log('end:controls.enabled = true;');
+            // console.log('end:controls.enabled = true;');
             controls.enabled = true;
             databus.touchCube = '';
         });
@@ -198,27 +218,30 @@ export default class Main {
             //@todo 教学：https://segmentfault.com/a/1190000010490845 https://github.com/mrdoob/three.js/blob/master/examples/webgl_interactive_cubes.html
             mouse.x = ( e.touches[0].clientX / window.innerWidth ) * 2 - 1;
             mouse.y = -( e.touches[0].clientY / window.innerHeight ) * 2 + 1;
-            // console.log(mouse.x,mouse.y);//世界坐标系：窗口范围按此单位恰好是(-1,-1)到(1,1)，
+            // console.log(mouse.x,mouse.y);//世界坐标系：窗口范围按此单位恰好是x(-1,1),y(-1,1)，
             // 射线的原理获得点击到的物体
             raycaster.setFromCamera(mouse, databus.camera);//
-            intersects = raycaster.intersectObjects(databus.scene.children);
+            intersects = raycaster.intersectObjects(databus.cubeArray);
 
 
             if (intersects.length > 0) {
-                for (let i of intersects) {
-                    if(i.object.name.indexOf('MAG') === 0){
-                        // console.log(i.object.name);
-                        // console.log('start:controls.enabled = false;');
-                        databus.touchCube = i.object;
-                        // console.log(databus.touchCube);
-                        // MagicCube.actionRotate(i.object,'x');
-                        controls.enabled = false;
-                        break;
-                    }
-                }
+                // console.log(intersects);
+                // console.log(intersects[0].object.name);
+                // console.log('start:controls.enabled = false;');
+                databus.touchCube = intersects[0].object;
+                databus.touchPosition = intersects[0].point;
+                // transformControl.attach(databus.touchCube);
+                databus.touchFace = MagicCube.getTouchFaceByCube(databus.touchPosition);
+                databus.rotationTwoRows = MagicCube.getRotationTwoRowsByTouchFace(databus.touchFace)
+                // console.log(databus.rotationTwoRows);
+                // console.log(databus.touchCube.position);
+                // MagicCube.actionRotate(i.object,'x');
+                controls.enabled = false;
+                // break;
+                // }
 
                 // console.log(intersects[0]);
-                  // intersects[ 0 ].object.position.x += 100;
+                // intersects[ 0 ].object.position.x += 100;
             }
             isOnTouchStart = true;
             lastTouchX = onTouchStartClientX = e.changedTouches[0].clientX;
