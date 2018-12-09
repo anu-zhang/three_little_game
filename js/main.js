@@ -203,7 +203,7 @@ export default class Main {
                 databus.rotateCubeID = MagicCube.getRotateCubeIDByCubeName(databus.rotateCubeName)
                 // console.log(databus.rotateCubeID);
                 //执行旋转
-                MagicCube.actionRow(databus.rotateCubeID, databus.rotateDirection);
+                MagicCube.actionRow(databus.verticalRow, databus.rotateDirection);
             }
         });
 

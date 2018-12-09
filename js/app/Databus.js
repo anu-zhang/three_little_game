@@ -6,7 +6,6 @@ export default class Databus {
         if (instance) {
             return instance;
         }
-
         instance = this;
         instance._width = window.innerWidth;
         instance._height = window.innerHeight;
@@ -23,49 +22,59 @@ export default class Databus {
         instance._cubeIDPositionMap = new Object();
         instance._cubeDistance = 60;
         instance._cubeChangKuanGao = 50;
+        instance._rotate = false;
+
     }
-    get cubeChangKuanGao()
-    {
+
+    get rotate() {
+        return instance._rotate;
+    }
+
+    set rotate(v) {
+        instance._rotate = v;
+    }
+
+    get cubeChangKuanGao() {
         return instance._cubeChangKuanGao;
     }
-    get cubeDistance()
-    {
+
+    get cubeDistance() {
         return instance._cubeDistance;
     }
-    get cubeIDPositionMap()
-    {
+
+    get cubeIDPositionMap() {
         return instance._cubeIDPositionMap;
     }
 
-    get cubeArray()
-    {
+    get cubeArray() {
         return instance._cubeArray;
     }
-    get pivotPointArray()
-    {
+
+    get pivotPointArray() {
         return instance._pivotPointArray;
 
     }
-    get sphereMesh()
-    {
+
+    get sphereMesh() {
         return instance._sphereMesh;
 
     }
-    set sphereMesh(c)
-    {
+
+    set sphereMesh(c) {
         instance._sphereMesh = c;
 
     }
-    get pivotPoint()
-    {
+
+    get pivotPoint() {
         return instance._pivotPoint;
 
     }
-    set pivotPoint(c)
-    {
+
+    set pivotPoint(c) {
         instance._pivotPoint = c;
 
     }
+
     get cube2() {
         return instance._cube2;
     }

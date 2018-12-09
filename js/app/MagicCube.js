@@ -75,20 +75,190 @@ export default class MagicCube {
         // MagicCube.actionRow();
     }
 
-    static actionRow(rotateCubeIDs, rotateDirection) {
+    static actionRow(verticalRow, rotateDirection) {
+        databus.rotate = true;
+        switch (rotateDirection) {
+            case 'x':
+                if (verticalRow === 'z') {
+                    Animation.pushAction(function () {
+                        if (databus.rotate) {
+                            for (var i in databus.rotateCubeID) {
+                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z -= 0.02;
+                                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z);
+                                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z <= -Math.PI / 2) {
+                                    databus.rotate = false;
+                                }
 
-        // console.log(databus.pivotPointArray[5]);
+                            }
+                        }
 
-        console.log('rotateCubeIDs', databus.rotateCubeID);
+                    });
+                } else if (verticalRow === 'y') {
+                    Animation.pushAction(function () {
+                        if (databus.rotate) {
+                            for (var i in databus.rotateCubeID) {
+                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y += 0.02;
+                                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y);
+                                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y >= Math.PI / 2) {
+                                    databus.rotate = false;
+                                }
+                            }
+                        }
+                    });
+                }
 
-        Animation.pushAction(function () {
-            for (var i in databus.rotateCubeID) {
-                // console.log(44444);
-                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y += 0.01;
-            }
+                break;
+            case '-x':
+                if (verticalRow === 'z') {
+                    Animation.pushAction(function () {
+                        if (databus.rotate) {
+
+                            for (var i in databus.rotateCubeID) {
+                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z += 0.02;
+                                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z);
+                                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z >= Math.PI / 2) {
+                                    databus.rotate = false;
+                                }
+                            }
+                        }
+                    });
+                } else if (verticalRow === 'y') {
+                    Animation.pushAction(function () {
+                        if (databus.rotate) {
+                            for (var i in databus.rotateCubeID) {
+                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y -= 0.02;
+                                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y);
+                                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y <= -Math.PI / 2) {
+                                    databus.rotate = false;
+                                }
+                            }
+                        }
+
+                    });
+                }
+                break;
+            case 'y':
+                if (verticalRow === 'x') {
+                    Animation.pushAction(function () {
+                        if (databus.rotate) {
+                            for (var i in databus.rotateCubeID) {
+                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x -= 0.02;
+                                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
+                                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x <= -Math.PI / 2) {
+                                    databus.rotate = false;
+                                }
+                            }
+                        }
+
+                    });
+                } else if (verticalRow === 'z') {
+                    Animation.pushAction(function () {
+                        if (databus.rotate) {
+                            for (var i in databus.rotateCubeID) {
+                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z += 0.02;
+                                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z);
+                                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z >= Math.PI / 2) {
+                                    databus.rotate = false;
+                                }
+                            }
+                        }
+
+                    });
+                }
+                break;
+            case '-y':
+                if (verticalRow === 'x') {
+                    Animation.pushAction(function () {
+                        if (databus.rotate) {
+
+                            for (var i in databus.rotateCubeID) {
+
+                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x += 0.02;
+                                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
+                                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x >= Math.PI / 2) {
+                                    databus.rotate = false;
+                                }
+                            }
+                        }
+                    });
+                } else if (verticalRow === 'z') {
+                    Animation.pushAction(function () {
+                        if (databus.rotate) {
+
+                            for (var i in databus.rotateCubeID) {
+                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z -= 0.02;
+                                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z);
+                                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z <= -Math.PI / 2) {
+                                    databus.rotate = false;
+                                }
+                            }
+                        }
+                    });
+                }
+                break;
+            case 'z':
+                if (verticalRow === 'x') {
+                    Animation.pushAction(function () {
+                        if (databus.rotate) {
+                            for (var i in databus.rotateCubeID) {
+                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x += 0.02;
+                                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
+                                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x >= Math.PI / 2) {
+                                    databus.rotate = false;
+                                }
+                            }
+                        }
+
+                    });
+                } else if (verticalRow === 'y') {
+                    Animation.pushAction(function () {
+                        if (databus.rotate) {
+
+                            for (var i in databus.rotateCubeID) {
+                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y -= 0.02;
+                                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y);
+                                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y <= -Math.PI / 2) {
+                                    databus.rotate = false;
+                                }
+                            }
+                        }
+                    });
+                }
+                break;
 
 
-        });
+            case '-z':
+                if (verticalRow === 'x') {
+                    Animation.pushAction(function () {
+                        if (databus.rotate) {
+
+                            for (var i in databus.rotateCubeID) {
+                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x -= 0.02;
+                                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
+                                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x <= -Math.PI / 2) {
+                                    databus.rotate = false;
+                                }
+                            }
+                        }
+                    });
+                } else if (verticalRow === 'y') {
+                    Animation.pushAction(function () {
+                        if (databus.rotate) {
+
+                            for (var i in databus.rotateCubeID) {
+                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y += 0.02;
+                                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y);
+                                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y >= Math.PI / 2) {
+                                    databus.rotate = false;
+                                }
+                            }
+                        }
+                    });
+                }
+                break;
+        }
+
+
     }
 
 
