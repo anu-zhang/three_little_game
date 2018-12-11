@@ -35,7 +35,7 @@ let color_L = 0xFF7F00;//左面橙色
 let color_U = 0xFFFF00;//上面黄色
 let color_D = 0xFFFFFF;//下面白
 let matArray = [];
-
+let speed = 0.2;
 //x 200 y 200 z200
 let Y = 0;
 let X = 120;
@@ -75,74 +75,157 @@ export default class MagicCube {
         // MagicCube.actionRow();
     }
 
+    static loadAction() {
+        // 按照x正向滑动，垂直于z轴方向转动
+        Animation.pushAction(function () {
+            if (databus.isRunning) {
+                for (var i in databus.rotateCubeID) {
+                    switch (databus.runningAction) {
+                        case 'x_z':// 按照x正向滑动，垂直于y轴转动
+                            databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z -= databus.speed;
+                            console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z);
+                            if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z <= -Math.PI / 2) {
+                                databus.isRunning = false;
+                                databus.runningAction = '';
+                                databus.rotateDirection = false;
+                            }
+                            break;
+                        case 'x_y':
+                            databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y += databus.speed;
+                            console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y);
+                            if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y >= Math.PI / 2) {
+                                databus.isRunning = false;
+                                databus.runningAction = '';
+                                databus.rotateDirection = false;
+
+                            }
+                            break;
+                        case '-x_z':
+                            databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z += databus.speed;
+                            console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z);
+                            if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z >= Math.PI / 2) {
+                                databus.isRunning = false;
+                                databus.runningAction = '';
+                                databus.rotateDirection = false;
+
+                            }
+                            break;
+                        case '-x_y':
+                            databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y -= databus.speed;
+                            console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y);
+                            if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y <= -Math.PI / 2) {
+                                databus.isRunning = false;
+                                databus.runningAction = '';
+                                databus.rotateDirection = false;
+
+                            }
+                            break;
+                        case 'y_x':
+                            databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x -= databus.speed;
+                            console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
+                            if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x <= -Math.PI / 2) {
+                                databus.isRunning = false;
+                                databus.runningAction = '';
+                                databus.rotateDirection = false;
+
+                            }
+                            break;
+                        case 'y_z':
+                            databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z += databus.speed;
+                            console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z);
+                            if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z >= Math.PI / 2) {
+                                databus.isRunning = false;
+                                databus.runningAction = '';
+                                databus.rotateDirection = false;
+
+                            }
+                            break;
+                        case '-y_x':
+                            databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x += databus.speed;
+                            console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
+                            if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x >= Math.PI / 2) {
+                                databus.isRunning = false;
+                                databus.runningAction = '';
+                                databus.rotateDirection = false;
+
+                            }
+                            break;
+                        case '-y_z':
+                            databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z -= databus.speed;
+                            console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z);
+                            if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z <= -Math.PI / 2) {
+                                databus.isRunning = false;
+                                databus.runningAction = '';
+                                databus.rotateDirection = false;
+
+                            }
+                            break;
+                        case 'z_x':
+                            databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x += databus.speed;
+                            console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
+                            if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x >= Math.PI / 2) {
+                                databus.isRunning = false;
+                                databus.runningAction = '';
+                                databus.rotateDirection = false;
+
+                            }
+                            break;
+                        case 'z_y':
+                            databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y -= databus.speed;
+                            console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y);
+                            if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y <= -Math.PI / 2) {
+                                databus.isRunning = false;
+                                databus.runningAction = '';
+                                databus.rotateDirection = false;
+
+                            }
+                            break;
+                        case '-z_x':
+                            databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x -= databus.speed;
+                            console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
+                            if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x <= -Math.PI / 2) {
+                                databus.isRunning = false;
+                                databus.runningAction = '';
+                                databus.rotateDirection = false;
+
+                            }
+                            break;
+                        case '-z_y':
+                            databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y += databus.speed;
+                            console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y);
+                            if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y >= Math.PI / 2) {
+                                databus.isRunning = false;
+                                databus.runningAction = '';
+                                databus.rotateDirection = false;
+
+                            }
+                            break;
+                    }
+                }
+            }
+
+        });
+
+
+    }
+
     static actionRow(verticalRow, rotateDirection) {
         databus.rotate = true;
         switch (rotateDirection) {
             case 'x':
-                if (verticalRow === 'z') {
-                    Animation.pushAction(function () {
-                        if (databus.rotate) {
-                            for (var i in databus.rotateCubeID) {
-                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z -= 0.02;
-                                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z);
-                                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z <= -Math.PI / 2) {
-                                    databus.rotate = false;
-                                }
-
-                            }
-                        }
-
-                    });
-                } else if (verticalRow === 'y') {
-                    Animation.pushAction(function () {
-                        if (databus.rotate) {
-                            for (var i in databus.rotateCubeID) {
-                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y += 0.02;
-                                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y);
-                                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y >= Math.PI / 2) {
-                                    databus.rotate = false;
-                                }
-                            }
-                        }
-                    });
-                }
+                databus.runningAction = 'x_' + verticalRow;
 
                 break;
             case '-x':
-                if (verticalRow === 'z') {
-                    Animation.pushAction(function () {
-                        if (databus.rotate) {
+                databus.runningAction = 'x_' + verticalRow;
 
-                            for (var i in databus.rotateCubeID) {
-                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z += 0.02;
-                                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z);
-                                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z >= Math.PI / 2) {
-                                    databus.rotate = false;
-                                }
-                            }
-                        }
-                    });
-                } else if (verticalRow === 'y') {
-                    Animation.pushAction(function () {
-                        if (databus.rotate) {
-                            for (var i in databus.rotateCubeID) {
-                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y -= 0.02;
-                                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y);
-                                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y <= -Math.PI / 2) {
-                                    databus.rotate = false;
-                                }
-                            }
-                        }
-
-                    });
-                }
                 break;
             case 'y':
                 if (verticalRow === 'x') {
                     Animation.pushAction(function () {
                         if (databus.rotate) {
                             for (var i in databus.rotateCubeID) {
-                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x -= 0.02;
+                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x -= speed;
                                 console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
                                 if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x <= -Math.PI / 2) {
                                     databus.rotate = false;
@@ -155,7 +238,7 @@ export default class MagicCube {
                     Animation.pushAction(function () {
                         if (databus.rotate) {
                             for (var i in databus.rotateCubeID) {
-                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z += 0.02;
+                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z += speed;
                                 console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z);
                                 if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z >= Math.PI / 2) {
                                     databus.rotate = false;
@@ -173,7 +256,7 @@ export default class MagicCube {
 
                             for (var i in databus.rotateCubeID) {
 
-                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x += 0.02;
+                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x += speed;
                                 console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
                                 if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x >= Math.PI / 2) {
                                     databus.rotate = false;
@@ -186,7 +269,7 @@ export default class MagicCube {
                         if (databus.rotate) {
 
                             for (var i in databus.rotateCubeID) {
-                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z -= 0.02;
+                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z -= speed;
                                 console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z);
                                 if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z <= -Math.PI / 2) {
                                     databus.rotate = false;
@@ -201,7 +284,7 @@ export default class MagicCube {
                     Animation.pushAction(function () {
                         if (databus.rotate) {
                             for (var i in databus.rotateCubeID) {
-                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x += 0.02;
+                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x += speed;
                                 console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
                                 if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x >= Math.PI / 2) {
                                     databus.rotate = false;
@@ -215,7 +298,7 @@ export default class MagicCube {
                         if (databus.rotate) {
 
                             for (var i in databus.rotateCubeID) {
-                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y -= 0.02;
+                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y -= speed;
                                 console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y);
                                 if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y <= -Math.PI / 2) {
                                     databus.rotate = false;
@@ -225,15 +308,13 @@ export default class MagicCube {
                     });
                 }
                 break;
-
-
             case '-z':
                 if (verticalRow === 'x') {
                     Animation.pushAction(function () {
                         if (databus.rotate) {
 
                             for (var i in databus.rotateCubeID) {
-                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x -= 0.02;
+                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x -= speed;
                                 console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
                                 if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x <= -Math.PI / 2) {
                                     databus.rotate = false;
@@ -246,7 +327,7 @@ export default class MagicCube {
                         if (databus.rotate) {
 
                             for (var i in databus.rotateCubeID) {
-                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y += 0.02;
+                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y += speed;
                                 console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y);
                                 if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y >= Math.PI / 2) {
                                     databus.rotate = false;

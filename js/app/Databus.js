@@ -23,7 +23,38 @@ export default class Databus {
         instance._cubeDistance = 60;
         instance._cubeChangKuanGao = 50;
         instance._rotate = false;
+        instance._actionRow = new Array();
+        instance._runningAction = '';
+        instance._speed = 0.2;
+        instance._isRunning = false;
+    }
 
+    get isRunning() {
+        return instance._isRunning;
+    }
+
+    set isRunning(c) {
+        instance._isRunning = c;
+    }
+
+    get speed() {
+        return instance._speed;
+    }
+
+    set speed(c) {
+        instance._speed = c;
+    }
+
+    get runningAction() {
+        return instance._runningAction;
+    }
+
+    set runningAction(c) {
+        instance._runningAction = c;
+    }
+
+    get actionRow() {
+        return instance._actionRow;
     }
 
     get rotate() {

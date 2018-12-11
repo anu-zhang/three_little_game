@@ -142,7 +142,7 @@ export default class Main {
         // Animation.initCube(databus.scene,100,100,100,50,50,50,faceMaterial,function () {});
 
 
-        Animation.revolutionExample(databus.scene);
+        // Animation.revolutionExample(databus.scene);
 
         // 初始化拖拽控件
         // var dragControls = new THREE.DragControls(databus.cubeArray, databus.camera, databus.renderer.domElement);
@@ -178,7 +178,7 @@ export default class Main {
 
         Touch.move(function (e) {
             var randNum = Math.round(Math.random());
-            if (randNum === 1 && databus.touchCube && !databus.rotateDirection) {//降低计算频率提升顺畅度
+            if (databus.touchCube && !databus.rotateDirection) {//降低计算频率提升顺畅度
                 // lastTouchY = e.touches[0].clientY;
                 // console.log(lastTouchX);
                 // lastTouchX = e.touches[0].clientX;
@@ -186,8 +186,8 @@ export default class Main {
                 // console.log(controls.getPolarAngle());
                 // console.log(databus.scene);
                 // console.log(databus.camera.position.x.toFixed(),databus.camera.position.y.toFixed(),databus.camera.position.z.toFixed());
-                mouse.x = ( e.touches[0].clientX / window.innerWidth ) * 2 - 1;
-                mouse.y = -( e.touches[0].clientY / window.innerHeight ) * 2 + 1;
+                mouse.x = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
 
                 raycaster.setFromCamera(mouse, databus.camera);//
                 intersects = raycaster.intersectObjects([databus.touchCube]);
@@ -202,8 +202,10 @@ export default class Main {
                 databus.rotateCubeName = MagicCube.getRotateRowByVerticalRowAndRelativeRow(databus.verticalRow, databus.relativeRow);
                 databus.rotateCubeID = MagicCube.getRotateCubeIDByCubeName(databus.rotateCubeName)
                 // console.log(databus.rotateCubeID);
+
                 //执行旋转
-                MagicCube.actionRow(databus.verticalRow, databus.rotateDirection);
+                databus.isRunning = true;
+                databus.runningAction = databus.rotateDirection + '_' + databus.verticalRow;
             }
         });
 
@@ -214,10 +216,11 @@ export default class Main {
             databus.touchCube = '';
         });
 
+        MagicCube.loadAction();
         Touch.start(function (e) {
             //@todo 教学：https://segmentfault.com/a/1190000010490845 https://github.com/mrdoob/three.js/blob/master/examples/webgl_interactive_cubes.html
-            mouse.x = ( e.touches[0].clientX / window.innerWidth ) * 2 - 1;
-            mouse.y = -( e.touches[0].clientY / window.innerHeight ) * 2 + 1;
+            mouse.x = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
             // console.log(mouse.x,mouse.y);//世界坐标系：窗口范围按此单位恰好是x(-1,1),y(-1,1)，
             // 射线的原理获得点击到的物体
             raycaster.setFromCamera(mouse, databus.camera);//
