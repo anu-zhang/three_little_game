@@ -47,578 +47,623 @@ let Z = 240;
 // let X = 270;
 export default class MagicCube {
 
-    constructor() {
+  constructor() {
 
-        if (instance) {
-            return instance;
+    if (instance) {
+      return instance;
+    }
+
+    instance = this;
+
+
+    return instance;
+  }
+
+  static init() {
+    matArray.push(new THREE.MeshBasicMaterial({color: color_R}));//right
+    matArray.push(new THREE.MeshBasicMaterial({color: color_L}));//left
+    matArray.push(new THREE.MeshBasicMaterial({color: color_U}));//up
+    matArray.push(new THREE.MeshBasicMaterial({color: color_D}));//down
+    matArray.push(new THREE.MeshBasicMaterial({color: color_F}));//前
+    matArray.push(new THREE.MeshBasicMaterial({color: color_B}));//后
+
+    var faceMaterial = new THREE.MeshFaceMaterial(matArray);
+
+    Animation.cube9(databus.scene, chang, kuan, gao, faceMaterial);
+
+    // console.log(MagicCube.getRowIDsByWhosIDAndDirection());
+    // MagicCube.actionRow();
+  }
+
+  static initPostion(rotateCubeID, lastRotation, tag) {
+    for (var i in rotateCubeID) {
+      switch (tag) {
+        case 'x':
+          databus.pivotPointArray[(rotateCubeID[i])].rotation.x = lastRotation;
+          break;
+
+        case 'y':
+          databus.pivotPointArray[(rotateCubeID[i])].rotation.y = lastRotation;
+          break;
+
+        case 'z':
+          databus.pivotPointArray[(rotateCubeID[i])].rotation.z = lastRotation;
+          break;
+      }
+    }
+  }
+
+  static loadAction() {
+    // 按照x正向滑动，垂直于z轴方向转动
+    Animation.pushAction(function () {
+      if (databus.isRunning) {
+        for (var i in databus.rotateCubeID) {
+          switch (databus.runningAction) {
+            // case databus.runningAction:
+            //     console.log(databus.runningAction);
+            case 'x_z':// 按照x正向滑动，垂直于y轴转动
+              databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z -= databus.speed;
+
+              console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z);
+              if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z <= -Math.PI / 2) {
+                MagicCube.initPostion(databus.rotateCubeID, -Math.PI / 2, 'z');
+
+                databus.isRunning = false;
+                databus.runningAction = '';
+                databus.rotateDirection = false;
+              }
+              break;
+            case 'x_y':
+              databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y += databus.speed;
+              console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y);
+              if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y >= Math.PI / 2) {
+                MagicCube.initPostion(databus.rotateCubeID, Math.PI / 2, 'y');
+
+                databus.isRunning = false;
+                databus.runningAction = '';
+                databus.rotateDirection = false;
+
+              }
+              break;
+            case '-x_z':
+              databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z += databus.speed;
+              console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z);
+              if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z >= Math.PI / 2) {
+                MagicCube.initPostion(databus.rotateCubeID, Math.PI / 2, 'z');
+
+                databus.isRunning = false;
+                databus.runningAction = '';
+                databus.rotateDirection = false;
+
+              }
+              break;
+            case '-x_y':
+              databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y -= databus.speed;
+              console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y);
+              if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y <= -Math.PI / 2) {
+                MagicCube.initPostion(databus.rotateCubeID, -Math.PI / 2, 'y');
+
+                databus.isRunning = false;
+                databus.runningAction = '';
+                databus.rotateDirection = false;
+
+              }
+              break;
+            case 'y_x':
+              databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x -= databus.speed;
+              console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
+              if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x <= -Math.PI / 2) {
+                MagicCube.initPostion(databus.rotateCubeID, -Math.PI / 2, 'x');
+
+                databus.isRunning = false;
+                databus.runningAction = '';
+                databus.rotateDirection = false;
+
+              }
+              break;
+            case 'y_z':
+              databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z += databus.speed;
+              console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z);
+              if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z >= Math.PI / 2) {
+                MagicCube.initPostion(databus.rotateCubeID, Math.PI / 2, 'z');
+
+                databus.isRunning = false;
+                databus.runningAction = '';
+                databus.rotateDirection = false;
+
+              }
+              break;
+            case '-y_x':
+              databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x += databus.speed;
+              console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
+              if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x >= Math.PI / 2) {
+                MagicCube.initPostion(databus.rotateCubeID, Math.PI / 2, 'x');
+
+                databus.isRunning = false;
+                databus.runningAction = '';
+                databus.rotateDirection = false;
+
+              }
+              break;
+            case '-y_z':
+              databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z -= databus.speed;
+              console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z);
+              if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z <= -Math.PI / 2) {
+                MagicCube.initPostion(databus.rotateCubeID, -Math.PI / 2, 'z');
+
+                databus.isRunning = false;
+                databus.runningAction = '';
+                databus.rotateDirection = false;
+
+              }
+              break;
+            case 'z_x':
+              databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x += databus.speed;
+              console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
+              if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x >= Math.PI / 2) {
+                MagicCube.initPostion(databus.rotateCubeID, Math.PI / 2, 'x');
+
+                databus.isRunning = false;
+                databus.runningAction = '';
+                databus.rotateDirection = false;
+
+              }
+              break;
+            case 'z_y':
+              databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y -= databus.speed;
+              console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y);
+              if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y <= -Math.PI / 2) {
+                MagicCube.initPostion(databus.rotateCubeID, -Math.PI / 2, 'y');
+
+                databus.isRunning = false;
+                databus.runningAction = '';
+                databus.rotateDirection = false;
+
+              }
+              break;
+            case '-z_x':
+              databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x -= databus.speed;
+              console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
+              if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x <= -Math.PI / 2) {
+                MagicCube.initPostion(databus.rotateCubeID, -Math.PI / 2, 'x');
+
+                databus.isRunning = false;
+                databus.runningAction = '';
+                databus.rotateDirection = false;
+
+              }
+              break;
+            case '-z_y':
+              databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y += databus.speed;
+              console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y);
+              if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y >= Math.PI / 2) {
+                MagicCube.initPostion(databus.rotateCubeID, Math.PI / 2, 'y');
+
+                databus.isRunning = false;
+                databus.runningAction = '';
+                databus.rotateDirection = false;
+
+              }
+              break;
+          }
         }
+      }
 
-        instance = this;
+    });
 
 
-        return instance;
-    }
+  }
 
-    static init() {
-        matArray.push(new THREE.MeshBasicMaterial({color: color_R}));//right
-        matArray.push(new THREE.MeshBasicMaterial({color: color_L}));//left
-        matArray.push(new THREE.MeshBasicMaterial({color: color_U}));//up
-        matArray.push(new THREE.MeshBasicMaterial({color: color_D}));//down
-        matArray.push(new THREE.MeshBasicMaterial({color: color_F}));//前
-        matArray.push(new THREE.MeshBasicMaterial({color: color_B}));//后
+  static actionRow(verticalRow, rotateDirection) {
+    databus.rotate = true;
+    switch (rotateDirection) {
+      case 'x':
+        databus.runningAction = 'x_' + verticalRow;
 
-        var faceMaterial = new THREE.MeshFaceMaterial(matArray);
+        break;
+      case '-x':
+        databus.runningAction = 'x_' + verticalRow;
 
-        Animation.cube9(databus.scene, chang, kuan, gao, faceMaterial);
-
-        // console.log(MagicCube.getRowIDsByWhosIDAndDirection());
-        // MagicCube.actionRow();
-    }
-
-    static loadAction() {
-        // 按照x正向滑动，垂直于z轴方向转动
-        Animation.pushAction(function () {
-            if (databus.isRunning) {
-                for (var i in databus.rotateCubeID) {
-                    switch (databus.runningAction) {
-                        case 'x_z':// 按照x正向滑动，垂直于y轴转动
-                            databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z -= databus.speed;
-                            console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z);
-                            if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z <= -Math.PI / 2) {
-                                databus.isRunning = false;
-                                databus.runningAction = '';
-                                databus.rotateDirection = false;
-                            }
-                            break;
-                        case 'x_y':
-                            databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y += databus.speed;
-                            console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y);
-                            if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y >= Math.PI / 2) {
-                                databus.isRunning = false;
-                                databus.runningAction = '';
-                                databus.rotateDirection = false;
-
-                            }
-                            break;
-                        case '-x_z':
-                            databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z += databus.speed;
-                            console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z);
-                            if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z >= Math.PI / 2) {
-                                databus.isRunning = false;
-                                databus.runningAction = '';
-                                databus.rotateDirection = false;
-
-                            }
-                            break;
-                        case '-x_y':
-                            databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y -= databus.speed;
-                            console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y);
-                            if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y <= -Math.PI / 2) {
-                                databus.isRunning = false;
-                                databus.runningAction = '';
-                                databus.rotateDirection = false;
-
-                            }
-                            break;
-                        case 'y_x':
-                            databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x -= databus.speed;
-                            console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
-                            if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x <= -Math.PI / 2) {
-                                databus.isRunning = false;
-                                databus.runningAction = '';
-                                databus.rotateDirection = false;
-
-                            }
-                            break;
-                        case 'y_z':
-                            databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z += databus.speed;
-                            console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z);
-                            if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z >= Math.PI / 2) {
-                                databus.isRunning = false;
-                                databus.runningAction = '';
-                                databus.rotateDirection = false;
-
-                            }
-                            break;
-                        case '-y_x':
-                            databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x += databus.speed;
-                            console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
-                            if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x >= Math.PI / 2) {
-                                databus.isRunning = false;
-                                databus.runningAction = '';
-                                databus.rotateDirection = false;
-
-                            }
-                            break;
-                        case '-y_z':
-                            databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z -= databus.speed;
-                            console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z);
-                            if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z <= -Math.PI / 2) {
-                                databus.isRunning = false;
-                                databus.runningAction = '';
-                                databus.rotateDirection = false;
-
-                            }
-                            break;
-                        case 'z_x':
-                            databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x += databus.speed;
-                            console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
-                            if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x >= Math.PI / 2) {
-                                databus.isRunning = false;
-                                databus.runningAction = '';
-                                databus.rotateDirection = false;
-
-                            }
-                            break;
-                        case 'z_y':
-                            databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y -= databus.speed;
-                            console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y);
-                            if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y <= -Math.PI / 2) {
-                                databus.isRunning = false;
-                                databus.runningAction = '';
-                                databus.rotateDirection = false;
-
-                            }
-                            break;
-                        case '-z_x':
-                            databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x -= databus.speed;
-                            console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
-                            if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x <= -Math.PI / 2) {
-                                databus.isRunning = false;
-                                databus.runningAction = '';
-                                databus.rotateDirection = false;
-
-                            }
-                            break;
-                        case '-z_y':
-                            databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y += databus.speed;
-                            console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y);
-                            if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y >= Math.PI / 2) {
-                                databus.isRunning = false;
-                                databus.runningAction = '';
-                                databus.rotateDirection = false;
-
-                            }
-                            break;
-                    }
+        break;
+      case 'y':
+        if (verticalRow === 'x') {
+          Animation.pushAction(function () {
+            if (databus.rotate) {
+              for (var i in databus.rotateCubeID) {
+                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x -= speed;
+                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
+                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x <= -Math.PI / 2) {
+                  databus.rotate = false;
                 }
+              }
             }
 
-        });
-
-
-    }
-
-    static actionRow(verticalRow, rotateDirection) {
-        databus.rotate = true;
-        switch (rotateDirection) {
-            case 'x':
-                databus.runningAction = 'x_' + verticalRow;
-
-                break;
-            case '-x':
-                databus.runningAction = 'x_' + verticalRow;
-
-                break;
-            case 'y':
-                if (verticalRow === 'x') {
-                    Animation.pushAction(function () {
-                        if (databus.rotate) {
-                            for (var i in databus.rotateCubeID) {
-                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x -= speed;
-                                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
-                                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x <= -Math.PI / 2) {
-                                    databus.rotate = false;
-                                }
-                            }
-                        }
-
-                    });
-                } else if (verticalRow === 'z') {
-                    Animation.pushAction(function () {
-                        if (databus.rotate) {
-                            for (var i in databus.rotateCubeID) {
-                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z += speed;
-                                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z);
-                                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z >= Math.PI / 2) {
-                                    databus.rotate = false;
-                                }
-                            }
-                        }
-
-                    });
+          });
+        } else if (verticalRow === 'z') {
+          Animation.pushAction(function () {
+            if (databus.rotate) {
+              for (var i in databus.rotateCubeID) {
+                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z += speed;
+                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z);
+                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z >= Math.PI / 2) {
+                  databus.rotate = false;
                 }
-                break;
-            case '-y':
-                if (verticalRow === 'x') {
-                    Animation.pushAction(function () {
-                        if (databus.rotate) {
+              }
+            }
 
-                            for (var i in databus.rotateCubeID) {
-
-                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x += speed;
-                                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
-                                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x >= Math.PI / 2) {
-                                    databus.rotate = false;
-                                }
-                            }
-                        }
-                    });
-                } else if (verticalRow === 'z') {
-                    Animation.pushAction(function () {
-                        if (databus.rotate) {
-
-                            for (var i in databus.rotateCubeID) {
-                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z -= speed;
-                                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z);
-                                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z <= -Math.PI / 2) {
-                                    databus.rotate = false;
-                                }
-                            }
-                        }
-                    });
-                }
-                break;
-            case 'z':
-                if (verticalRow === 'x') {
-                    Animation.pushAction(function () {
-                        if (databus.rotate) {
-                            for (var i in databus.rotateCubeID) {
-                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x += speed;
-                                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
-                                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x >= Math.PI / 2) {
-                                    databus.rotate = false;
-                                }
-                            }
-                        }
-
-                    });
-                } else if (verticalRow === 'y') {
-                    Animation.pushAction(function () {
-                        if (databus.rotate) {
-
-                            for (var i in databus.rotateCubeID) {
-                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y -= speed;
-                                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y);
-                                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y <= -Math.PI / 2) {
-                                    databus.rotate = false;
-                                }
-                            }
-                        }
-                    });
-                }
-                break;
-            case '-z':
-                if (verticalRow === 'x') {
-                    Animation.pushAction(function () {
-                        if (databus.rotate) {
-
-                            for (var i in databus.rotateCubeID) {
-                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x -= speed;
-                                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
-                                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x <= -Math.PI / 2) {
-                                    databus.rotate = false;
-                                }
-                            }
-                        }
-                    });
-                } else if (verticalRow === 'y') {
-                    Animation.pushAction(function () {
-                        if (databus.rotate) {
-
-                            for (var i in databus.rotateCubeID) {
-                                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y += speed;
-                                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y);
-                                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y >= Math.PI / 2) {
-                                    databus.rotate = false;
-                                }
-                            }
-                        }
-                    });
-                }
-                break;
+          });
         }
+        break;
+      case '-y':
+        if (verticalRow === 'x') {
+          Animation.pushAction(function () {
+            if (databus.rotate) {
 
+              for (var i in databus.rotateCubeID) {
 
-    }
+                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x += speed;
+                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
+                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x >= Math.PI / 2) {
+                  databus.rotate = false;
+                }
+              }
+            }
+          });
+        } else if (verticalRow === 'z') {
+          Animation.pushAction(function () {
+            if (databus.rotate) {
 
-
-    static getRotateCubeIDByCubeName(rotateCubeName) {
-        var rotateCubeArr = new Array();
-        for (let i in rotateCubeName) {
-            console.log(rotateCubeName[i]);
-            rotateCubeArr.push(databus.cubeIDPositionMap[rotateCubeName[i]]);
+              for (var i in databus.rotateCubeID) {
+                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z -= speed;
+                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z);
+                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.z <= -Math.PI / 2) {
+                  databus.rotate = false;
+                }
+              }
+            }
+          });
         }
-        return rotateCubeArr;
-    }
+        break;
+      case 'z':
+        if (verticalRow === 'x') {
+          Animation.pushAction(function () {
+            if (databus.rotate) {
+              for (var i in databus.rotateCubeID) {
+                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x += speed;
+                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
+                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x >= Math.PI / 2) {
+                  databus.rotate = false;
+                }
+              }
+            }
 
-    static getRelativeRowByVerticalRowAndTouchCubePosition(verticalRow, touchPosition) {
-        var p = 'M';
-        switch (verticalRow) {
-            case 'x':
-                if (touchPosition.x >= (85 - 50)) {
-                    p = 'R';
+          });
+        } else if (verticalRow === 'y') {
+          Animation.pushAction(function () {
+            if (databus.rotate) {
+
+              for (var i in databus.rotateCubeID) {
+                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y -= speed;
+                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y);
+                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y <= -Math.PI / 2) {
+                  databus.rotate = false;
                 }
-                if (touchPosition.x <= (-85 + 50)) {
-                    p = 'L';
-                }
-                break;
-            case 'y':
-                if (touchPosition.y >= (85 - 50)) {
-                    p = 'U';
-                }
-                if (touchPosition.y <= (-85 + 50)) {
-                    p = 'D';
-                }
-                break;
-            case 'z':
-                if (touchPosition.z >= (85 - 50)) {
-                    p = 'F';
-                }
-                if (touchPosition.z <= (-85 + 50)) {
-                    p = 'B';
-                }
-                break;
+              }
+            }
+          });
         }
-        return p;
+        break;
+      case '-z':
+        if (verticalRow === 'x') {
+          Animation.pushAction(function () {
+            if (databus.rotate) {
 
-    }
+              for (var i in databus.rotateCubeID) {
+                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x -= speed;
+                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x);
+                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.x <= -Math.PI / 2) {
+                  databus.rotate = false;
+                }
+              }
+            }
+          });
+        } else if (verticalRow === 'y') {
+          Animation.pushAction(function () {
+            if (databus.rotate) {
 
-
-    static getRotateRowByVerticalRowAndRelativeRow(verticalRow, relativeRow) {
-        switch (verticalRow) {
-            case 'x':
-                return MagicCube.cubeRowVerticalXName(relativeRow);
-                break;
-            case 'y':
-                return MagicCube.cubeRowVerticalYName(relativeRow);
-                break;
-            case 'z':
-                return MagicCube.cubeRowVerticalZName(relativeRow);
-                break;
+              for (var i in databus.rotateCubeID) {
+                databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y += speed;
+                console.log(databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y);
+                if (databus.pivotPointArray[(databus.rotateCubeID[i])].rotation.y >= Math.PI / 2) {
+                  databus.rotate = false;
+                }
+              }
+            }
+          });
         }
+        break;
     }
 
-    static getVerticalRowByMaybeAndRotaDirect(rotationTwoRows, rotateDirection) {
-        // console.log(rotateDirection);
-        // console.log(rotateDirection.slice(-1));
-        // console.log(rotationTwoRows);
-        // // ["Vertical_z", "Vertical_y"] "y"
-        // console.log(rotationTwoRows[0].indexOf(rotateDirection.slice(-1)));
-        var verticalRow = '';
-        if (rotationTwoRows[0].indexOf(rotateDirection.slice(-1)) === -1) {
-            verticalRow = rotationTwoRows[0].slice(-1);
+
+  }
+
+
+  static getRotateCubeIDByCubeName(rotateCubeName) {
+    var rotateCubeArr = new Array();
+    for (let i in rotateCubeName) {
+      console.log(rotateCubeName[i]);
+      rotateCubeArr.push(databus.cubeIDPositionMap[rotateCubeName[i]]);
+    }
+    return rotateCubeArr;
+  }
+
+  static getRelativeRowByVerticalRowAndTouchCubePosition(verticalRow, touchPosition) {
+    var p = 'M';
+    switch (verticalRow) {
+      case 'x':
+        if (touchPosition.x >= (85 - 50)) {
+          p = 'R';
+        }
+        if (touchPosition.x <= (-85 + 50)) {
+          p = 'L';
+        }
+        break;
+      case 'y':
+        if (touchPosition.y >= (85 - 50)) {
+          p = 'U';
+        }
+        if (touchPosition.y <= (-85 + 50)) {
+          p = 'D';
+        }
+        break;
+      case 'z':
+        if (touchPosition.z >= (85 - 50)) {
+          p = 'F';
+        }
+        if (touchPosition.z <= (-85 + 50)) {
+          p = 'B';
+        }
+        break;
+    }
+    return p;
+
+  }
+
+
+  static getRotateRowByVerticalRowAndRelativeRow(verticalRow, relativeRow) {
+    switch (verticalRow) {
+      case 'x':
+        return MagicCube.cubeRowVerticalXName(relativeRow);
+        break;
+      case 'y':
+        return MagicCube.cubeRowVerticalYName(relativeRow);
+        break;
+      case 'z':
+        return MagicCube.cubeRowVerticalZName(relativeRow);
+        break;
+    }
+  }
+
+  static getVerticalRowByMaybeAndRotaDirect(rotationTwoRows, rotateDirection) {
+    // console.log(rotateDirection);
+    // console.log(rotateDirection.slice(-1));
+    // console.log(rotationTwoRows);
+    // // ["Vertical_z", "Vertical_y"] "y"
+    // console.log(rotationTwoRows[0].indexOf(rotateDirection.slice(-1)));
+    var verticalRow = '';
+    if (rotationTwoRows[0].indexOf(rotateDirection.slice(-1)) === -1) {
+      verticalRow = rotationTwoRows[0].slice(-1);
+    } else {
+      verticalRow = rotationTwoRows[1].slice(-1);
+    }
+    return verticalRow;
+    // rotationTwoRows[0].indexOf(rotateDirection.substring(-1));
+
+  }
+
+  static getRotateDirectionByTouchFaceAndTowPosition(touchFace, touchPosition, currentPosition) {
+    var x = currentPosition.x - touchPosition.x;
+    var y = currentPosition.y - touchPosition.y;
+    var z = currentPosition.z - touchPosition.z;
+    var rotation = '';
+    switch (touchFace) {
+      case 'L':
+        if (Math.abs(z) > Math.abs(y)) {
+          rotation = 'z';
+          if (z < 0) {
+            rotation = '-z';
+          }
         } else {
-            verticalRow = rotationTwoRows[1].slice(-1);
+          rotation = 'y';
+          if (y < 0) {
+            rotation = '-y';
+          }
         }
-        return verticalRow;
-        // rotationTwoRows[0].indexOf(rotateDirection.substring(-1));
+        break;
+      case 'R':
+        if (Math.abs(z) > Math.abs(y)) {
+          rotation = 'z';
+          if (z < 0) {
+            rotation = '-z';
+          }
+        } else {
+          rotation = 'y';
+          if (y < 0) {
+            rotation = '-y';
+          }
+        }
+        break;
+      case 'U':
+        if (Math.abs(z) > Math.abs(x)) {
+          rotation = 'z';
+          if (z < 0) {
+            rotation = '-z';
+          }
+        } else {
+          rotation = 'x';
+          if (x < 0) {
+            rotation = '-x';
+          }
+        }
+        break;
+      case 'D':
+        if (Math.abs(z) > Math.abs(x)) {
+          rotation = 'z';
+          if (z < 0) {
+            rotation = '-z';
+          }
+        } else {
+          rotation = 'x';
+          if (x < 0) {
+            rotation = '-x';
+          }
+        }
+        break;
+      case 'F':
+        if (Math.abs(y) > Math.abs(x)) {
+          rotation = 'y';
+          if (y < 0) {
+            rotation = '-y';
+          }
+        } else {
+          rotation = 'x';
+          if (x < 0) {
+            rotation = '-x';
+          }
+        }
+        break;
+      case 'B':
+        if (Math.abs(y) > Math.abs(x)) {
+          rotation = 'y';
+          if (y < 0) {
+            rotation = '-y';
+          }
+        } else {
+          rotation = 'x';
+          if (x < 0) {
+            rotation = '-x';
+          }
+        }
+        break;
+    }
+    return rotation;
+  }
 
+  static getTouchFaceByCube(touchPosition) {
+    var touchFace = '';
+
+    switch (Math.round(touchPosition.x)) {
+      case 85:
+        touchFace = 'R';
+        break;
+      case -85:
+        touchFace = 'L';
+        break;
     }
 
-    static getRotateDirectionByTouchFaceAndTowPosition(touchFace, touchPosition, currentPosition) {
-        var x = currentPosition.x - touchPosition.x;
-        var y = currentPosition.y - touchPosition.y;
-        var z = currentPosition.z - touchPosition.z;
-        var rotation = '';
-        switch (touchFace) {
-            case 'L':
-                if (Math.abs(z) > Math.abs(y)) {
-                    rotation = 'z';
-                    if (z < 0) {
-                        rotation = '-z';
-                    }
-                } else {
-                    rotation = 'y';
-                    if (y < 0) {
-                        rotation = '-y';
-                    }
-                }
-                break;
-            case 'R':
-                if (Math.abs(z) > Math.abs(y)) {
-                    rotation = 'z';
-                    if (z < 0) {
-                        rotation = '-z';
-                    }
-                } else {
-                    rotation = 'y';
-                    if (y < 0) {
-                        rotation = '-y';
-                    }
-                }
-                break;
-            case 'U':
-                if (Math.abs(z) > Math.abs(x)) {
-                    rotation = 'z';
-                    if (z < 0) {
-                        rotation = '-z';
-                    }
-                } else {
-                    rotation = 'x';
-                    if (x < 0) {
-                        rotation = '-x';
-                    }
-                }
-                break;
-            case 'D':
-                if (Math.abs(z) > Math.abs(x)) {
-                    rotation = 'z';
-                    if (z < 0) {
-                        rotation = '-z';
-                    }
-                } else {
-                    rotation = 'x';
-                    if (x < 0) {
-                        rotation = '-x';
-                    }
-                }
-                break;
-            case 'F':
-                if (Math.abs(y) > Math.abs(x)) {
-                    rotation = 'y';
-                    if (y < 0) {
-                        rotation = '-y';
-                    }
-                } else {
-                    rotation = 'x';
-                    if (x < 0) {
-                        rotation = '-x';
-                    }
-                }
-                break;
-            case 'B':
-                if (Math.abs(y) > Math.abs(x)) {
-                    rotation = 'y';
-                    if (y < 0) {
-                        rotation = '-y';
-                    }
-                } else {
-                    rotation = 'x';
-                    if (x < 0) {
-                        rotation = '-x';
-                    }
-                }
-                break;
-        }
-        return rotation;
+    switch (Math.round(touchPosition.y)) {
+      case 85:
+        touchFace = 'U';
+        break;
+      case -85:
+        touchFace = 'D';
+        break;
     }
 
-    static getTouchFaceByCube(touchPosition) {
-        var touchFace = '';
-
-        switch (Math.round(touchPosition.x)) {
-            case 85:
-                touchFace = 'R';
-                break;
-            case -85:
-                touchFace = 'L';
-                break;
-        }
-
-        switch (Math.round(touchPosition.y)) {
-            case 85:
-                touchFace = 'U';
-                break;
-            case -85:
-                touchFace = 'D';
-                break;
-        }
-
-        switch (Math.round(touchPosition.z)) {
-            case 85:
-                touchFace = 'F';
-                break;
-            case -85:
-                touchFace = 'B';
-                break;
-        }
-        return touchFace;
+    switch (Math.round(touchPosition.z)) {
+      case 85:
+        touchFace = 'F';
+        break;
+      case -85:
+        touchFace = 'B';
+        break;
     }
+    return touchFace;
+  }
 
-    static getRotationTwoRowsByTouchFace(face) {
-        switch (face) {
-            case 'L':
-                return ['Vertical_z', 'Vertical_y'];
-                break;
-            case 'R':
-                return ['Vertical_z', 'Vertical_y'];
-                break;
-            case 'U':
-                return ['Vertical_x', 'Vertical_z'];
-                break;
-            case 'D':
-                return ['Vertical_x', 'Vertical_z'];
-                break;
-            case 'F':
-                return ['Vertical_x', 'Vertical_y'];
-                break;
-            case 'B':
-                return ['Vertical_x', 'Vertical_y'];
-                break;
-        }
+  static getRotationTwoRowsByTouchFace(face) {
+    switch (face) {
+      case 'L':
+        return ['Vertical_z', 'Vertical_y'];
+        break;
+      case 'R':
+        return ['Vertical_z', 'Vertical_y'];
+        break;
+      case 'U':
+        return ['Vertical_x', 'Vertical_z'];
+        break;
+      case 'D':
+        return ['Vertical_x', 'Vertical_z'];
+        break;
+      case 'F':
+        return ['Vertical_x', 'Vertical_y'];
+        break;
+      case 'B':
+        return ['Vertical_x', 'Vertical_y'];
+        break;
     }
+  }
 
-    static cubeVerticalRowPosition() {
-        var posi = {
-            'x': ['L', 'M', 'R'],
-            'y': ['U', 'M', 'D'],
-            'z': ['F', 'M', 'B']
-        };
-        return posi;
-    }
+  static cubeVerticalRowPosition() {
+    var posi = {
+      'x': ['L', 'M', 'R'],
+      'y': ['U', 'M', 'D'],
+      'z': ['F', 'M', 'B']
+    };
+    return posi;
+  }
 
-    // 垂直于X
-    static cubeRowVerticalXName(posi) {
-        switch (posi) {
-            case 'L':
-                return ['L_4', 'L_5', 'L_6', 'L_1', 'L_2', 'L_3', 'L_7', 'L_8', 'L_9'];
-                break;
-            case 'M':
-                return ['M', 'U_2', 'U_8', 'U_5', 'D_2', 'D_5', 'D_8', 'F_5', 'B_5'];
-                break;
-            case 'R':
-                return ['R_6', 'R_5', 'R_4', 'R_3', 'R_2', 'R_1', 'R_9', 'R_8', 'R_7'];
-                break;
-            default:
-                return 'params L or M or R;';
-                break;
-        }
+  // 垂直于X
+  static cubeRowVerticalXName(posi) {
+    switch (posi) {
+      case 'L':
+        return ['L_4', 'L_5', 'L_6', 'L_1', 'L_2', 'L_3', 'L_7', 'L_8', 'L_9'];
+        break;
+      case 'M':
+        return ['M', 'U_2', 'U_8', 'U_5', 'D_2', 'D_5', 'D_8', 'F_5', 'B_5'];
+        break;
+      case 'R':
+        return ['R_6', 'R_5', 'R_4', 'R_3', 'R_2', 'R_1', 'R_9', 'R_8', 'R_7'];
+        break;
+      default:
+        return 'params L or M or R;';
+        break;
     }
+  }
 
-    static cubeRowVerticalYName(posi) {
-        switch (posi) {
-            case 'U':
-                return ['U_3', 'U_6', 'U_9', 'U_2', 'U_5', 'U_8', 'U_1', 'U_4', 'U_7'];
-                break;
-            case 'M':
-                return ['M', 'F_4', 'F_5', 'F_6', 'B_4', 'B_5', 'B_6', 'L_5', 'R_5'];
-                break;
-            case 'D':
-                return ['D_8', 'D_5', 'D_2', 'D_7', 'D_4', 'D_1', 'D_9', 'D_6', 'D_3'];
-                break;
-            default:
-                return 'params U or M or R;';
-                break;
-        }
+  static cubeRowVerticalYName(posi) {
+    switch (posi) {
+      case 'U':
+        return ['U_3', 'U_6', 'U_9', 'U_2', 'U_5', 'U_8', 'U_1', 'U_4', 'U_7'];
+        break;
+      case 'M':
+        return ['M', 'F_4', 'F_5', 'F_6', 'B_4', 'B_5', 'B_6', 'L_5', 'R_5'];
+        break;
+      case 'D':
+        return ['D_8', 'D_5', 'D_2', 'D_7', 'D_4', 'D_1', 'D_9', 'D_6', 'D_3'];
+        break;
+      default:
+        return 'params U or M or R;';
+        break;
     }
+  }
 
-    static cubeRowVerticalZName(posi) {
-        switch (posi) {
-            case 'F':
-                return ['F_5', 'F_6', 'F_4', 'F_3', 'F_2', 'F_1', 'F_8', 'F_7', 'F_9'];
-                break;
-            case 'M':
-                return ['M', 'U_4', 'U_5', 'U_6', 'D_4', 'D_5', 'D_6', 'L_5', 'R_5'];
-                break;
-            case 'B':
-                return ['B_5', 'B_4', 'B_6', 'B_1', 'B_2', 'B_3', 'B_8', 'B_9', 'B_7'];
-                break;
-            default:
-                return 'params F or M or B;';
-                break;
-        }
+  static cubeRowVerticalZName(posi) {
+    switch (posi) {
+      case 'F':
+        return ['F_5', 'F_6', 'F_4', 'F_3', 'F_2', 'F_1', 'F_8', 'F_7', 'F_9'];
+        break;
+      case 'M':
+        return ['M', 'U_4', 'U_5', 'U_6', 'D_4', 'D_5', 'D_6', 'L_5', 'R_5'];
+        break;
+      case 'B':
+        return ['B_5', 'B_4', 'B_6', 'B_1', 'B_2', 'B_3', 'B_8', 'B_9', 'B_7'];
+        break;
+      default:
+        return 'params F or M or B;';
+        break;
     }
+  }
 }
 // D_8
 // D_5
